@@ -12,13 +12,13 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center space-x-4">
-            <Image
+{/*             <Image
               src="/gdgoc_logo.png"
               alt="GDGoC Logo"
               width={40}
               height={40}
               className="w-10 h-10 object-contain"
-            />
+            /> */}
             <Image
               src="/GDG-Lockup-1Line-Black.png"
               alt="Google Developer Groups on Campus"
