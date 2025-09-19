@@ -35,6 +35,12 @@ export default function Header() {
               Home
             </Link>
             <Link
+              href="/about"
+              className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
+            >
+              About
+            </Link>
+            <Link
               href="/recruitment"
               className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
             >
