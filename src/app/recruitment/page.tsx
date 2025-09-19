@@ -4,21 +4,21 @@ export default function RecruitmentPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
+      <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-r from-primary via-secondary to-success rounded-full"></div>
-              <h1 className="text-xl font-semibold text-gray-900">DSC GITAM Portal</h1>
+              <h1 className="text-xl font-semibold text-gray-900 font-display">DSC GITAM Portal</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-primary transition-colors">
+              <Link href="/" className="text-gray-700 hover:text-primary transition-colors font-medium">
                 Home
               </Link>
-              <Link href="/recruitment" className="text-primary font-medium">
+              <Link href="/recruitment" className="text-primary font-bold">
                 Recruitment
               </Link>
-              <Link href="/auth/signin" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+              <Link href="/auth/signin" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all shadow-sm hover:shadow-md font-medium">
                 Sign In
               </Link>
             </nav>
@@ -31,25 +31,25 @@ export default function RecruitmentPage() {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-success rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg font-bold">DSC</span>
+            <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-success rounded-2xl flex items-center justify-center shadow-xl">
+              <span className="text-white text-lg font-bold font-display">DSC</span>
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Join the <span className="text-primary">Core Team</span>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-display">
+            Join the <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Core Team</span>
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Apply to become a core team member of DSC GITAM and help shape the future of technology on campus.
             Please fill out the form below with accurate information.
           </p>
         </div>
 
         {/* Application Form */}
-        <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-8">
-          <form className="space-y-6">
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8">
+          <form className="space-y-8">
             {/* Personal Information */}
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Personal Information</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -109,8 +109,8 @@ export default function RecruitmentPage() {
             </div>
 
             {/* Academic Information */}
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Academic Information</h2>
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Academic Information</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 mb-2">
@@ -182,8 +182,8 @@ export default function RecruitmentPage() {
             </div>
 
             {/* Technical Skills */}
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Technical Skills & Experience</h2>
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Technical Skills & Experience</h2>
               <div className="space-y-6">
                 <div>
                   <label htmlFor="skills" className="block text-sm font-medium text-gray-700 mb-2">
@@ -226,8 +226,8 @@ export default function RecruitmentPage() {
             </div>
 
             {/* Motivation */}
-            <div className="border-b border-gray-200 pb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Motivation & Goals</h2>
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Motivation & Goals</h2>
               <div className="space-y-6">
                 <div>
                   <label htmlFor="motivation" className="block text-sm font-medium text-gray-700 mb-2">
@@ -259,8 +259,8 @@ export default function RecruitmentPage() {
             </div>
 
             {/* Role Preference */}
-            <div className="pb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Role Preference</h2>
+            <div className="pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Role Preference</h2>
               <div>
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
                   Preferred Role *
@@ -283,10 +283,10 @@ export default function RecruitmentPage() {
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-center pt-6">
+            <div className="flex justify-center pt-8">
               <button
                 type="submit"
-                className="bg-primary text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-blue-600 transition-colors shadow-lg hover:shadow-xl inline-flex items-center"
+                className="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105"
               >
                 Submit Application
                 <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

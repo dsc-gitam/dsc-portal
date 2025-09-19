@@ -23,7 +23,8 @@ export default {
         success: '#34A853',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Google Sans', 'sans-serif'],
+        display: ['Google Sans Display', 'Google Sans', 'sans-serif'],
       },
     },
   },
