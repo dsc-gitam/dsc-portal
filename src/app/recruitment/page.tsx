@@ -429,7 +429,7 @@ export default function RecruitmentPage() {
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="tech-task-2" className="text-sm text-gray-700">
-                          Create a basic "Hello World" app with a button that changes the text on the screen.
+                          Create a basic &quot;Hello World&quot; app with a button that changes the text on the screen.
                         </label>
                       </div>
                       <div className="flex items-start space-x-3">
@@ -488,7 +488,7 @@ export default function RecruitmentPage() {
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="marketing-task-1" className="text-sm text-gray-700">
-                          Design a simple social media graphic to promote a "GDG Meet and Greet" event.
+                          Design a simple social media graphic to promote a &quot;GDG Meet and Greet&quot; event.
                         </label>
                       </div>
                       <div className="flex items-start space-x-3">
@@ -516,7 +516,7 @@ export default function RecruitmentPage() {
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="marketing-task-3" className="text-sm text-gray-700">
-                          Create a 15-second "reel" or short video using provided photos or public GDG footage.
+                          Create a 15-second &quot;reel&quot; or short video using provided photos or public GDG footage.
                         </label>
                       </div>
                     </div>
@@ -575,7 +575,7 @@ export default function RecruitmentPage() {
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="ops-task-2" className="text-sm text-gray-700">
-                          Outline a project idea for the community. Describe the project's goal, the steps to complete it, and how it would benefit the members.
+                          Outline a project idea for the community. Describe the project&apos;s goal, the steps to complete it, and how it would benefit the members.
                         </label>
                       </div>
                     </div>
