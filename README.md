@@ -1,8 +1,8 @@
-# DSC GITAM Portal
+# GDGoC GITAM Portal
 
 A comprehensive web portal for Google Developer Groups on Campus 2025 core team management at GITAM University. This modern, responsive application provides a complete recruitment and management solution with advanced form handling, authentication, and email notifications.
 
-![DSC GITAM Portal](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=nextdotjs)
+![GDGoC GITAM Portal](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=nextdotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![NextAuth.js](https://img.shields.io/badge/NextAuth.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
@@ -43,8 +43,8 @@ A comprehensive web portal for Google Developer Groups on Campus 2025 core team 
    - GitHub Profile URL
 
 4. **Motivation & Goals**
-   - Why join DSC GITAM?
-   - How to contribute to DSC GITAM?
+   - Why join GDGoC GITAM?
+   - How to contribute to GDGoC GITAM?
 
 #### **Advanced Sections:**
 
@@ -385,9 +385,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-**DSC GITAM Core Team**
-- Email: dsc@gitam.in
-- Website: [DSC GITAM Portal](https://dsc-portal.manasmalla.dev)
+**GDGoC GITAM Core Team**
+- Email: dsc.gitam@gmail.com
+- Website: [GDGoC GITAM Portal](https://dsc-portal.manasmalla.dev)
 - GitHub: [@dsc-gitam](https://github.com/dsc-gitam)
 
 ## 🙏 Acknowledgments
@@ -400,4 +400,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ by DSC GITAM for the developer community**
+**Built with ❤️ by GDGoC GITAM for the developer community**

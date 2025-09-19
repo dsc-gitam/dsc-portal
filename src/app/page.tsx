@@ -9,10 +9,20 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-primary-secondary-success rounded-2xl flex items-center justify-center">
-                <span className="text-white text-sm font-bold font-display">DSC</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 font-display">DSC GITAM</h1>
+              <Image
+                src="/gdgoc_logo.png"
+                alt="GDGoC Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain"
+              />
+              <Image
+                src="/GDG-Lockup-1Line-Black.png"
+                alt="Google Developer Groups on Campus"
+                width={200}
+                height={40}
+                className="h-8 w-auto object-contain"
+              />
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm">
@@ -107,7 +117,7 @@ export default function HomePage() {
                     Building the next generation of developers
                   </h2>
                   <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                    At DSC GITAM, we&apos;re more than just a community. We&apos;re a launchpad for innovation, 
+                    At GDGoC GITAM, we&apos;re more than just a community. We&apos;re a launchpad for innovation, 
                     learning, and meaningful connections in the tech world.
                   </p>
                   <div className="space-y-4">
@@ -149,7 +159,7 @@ export default function HomePage() {
         <section className="py-20">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-display">
-              Why Join <span className="text-primary">DSC GITAM?</span>
+              Why Join <span className="text-primary">GDGoC GITAM?</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Become part of a thriving community of developers and innovators
@@ -189,22 +199,71 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Leader Section */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-display">
+                Meet Our <span className="text-primary">Leader</span>
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Introducing the lead, Google Developer Groups on Campus, 2025-2026
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-3xl p-8 lg:p-16 shadow-xl border border-gray-100">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="order-2 lg:order-1">
+                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 font-display">
+                    Ms. Kavya Chandana
+                  </h3>
+                  <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                    A creative soul with a passion for innovation, I aim to empower women in breaking down barriers and solve problems of my women friends and the world. With my love for painting and technology, I desire to innovate and bring my unique vision to the world by blending art and technology in exciting new ways, inspire others and make a positive impact.
+                  </p>
+                  <div className="bg-gray-50 rounded-2xl p-6">
+                    <p className="text-gray-700 leading-relaxed">
+                      Ms. Kavya Chandana, an affluent technologist, enthusiastic entrepreneur, creative artist, and team builder who uplifts her co-female colleagues and helps them achieve their goals. It&apos;s our utmost pleasure to welcome her to lead us through the upcoming tenure, building solutions for problems around our community, upskilling, and taking GDGoC to new heights.
+                    </p>
+                  </div>
+                </div>
+                <div className="order-1 lg:order-2">
+                  <div className="relative">
+                    <Image
+                      src="/kavya-chandana.png"
+                      alt="Kavya Chandana - GDGoC Lead"
+                      width={400}
+                      height={500}
+                      className="w-full h-auto rounded-2xl shadow-lg"
+                      priority
+                    />
+                    <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-gradient-primary-secondary rounded-2xl flex items-center justify-center shadow-lg">
+                      <span className="text-white text-xl font-bold">🚀</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Call to Action Section */}
         <section className="py-20">
-          <div className="bg-gradient-primary-secondary-success rounded-3xl p-12 text-center text-white shadow-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">Ready to Join Us?</h2>
-            <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
-              Take the first step towards becoming a part of the most exciting tech community on campus.
-            </p>
-            <Link 
-              href="/recruitment"
-              className="bg-white text-primary px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105"
-            >
-              Start Your Application
-              <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
+          <div className="mx-6 lg:mx-8">
+            <div className="bg-gradient-io2024-main rounded-3xl p-12 text-center text-white shadow-2xl">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">Ready to Join Us?</h2>
+              <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+                Take the first step towards becoming a part of the most exciting tech community on campus.
+              </p>
+              <Link 
+                href="/recruitment"
+                className="bg-white text-gray-900 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-50 hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105"
+              >
+                Start Your Application
+                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </section>
       </main>
@@ -215,14 +274,20 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-primary-success rounded-full"></div>
-                <span className="text-gray-900 font-semibold font-display">DSC GITAM</span>
+                <Image
+                  src="/gdgoc_logo.png"
+                  alt="GDGoC Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain"
+                />
+                <span className="text-gray-900 font-semibold font-display">GDGoC GITAM</span>
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
                 Empowering the next generation of developers and innovators at GITAM University.
               </p>
               <div className="text-sm text-gray-500">
-                © 2025 DSC GITAM. All rights reserved.
+                © 2025 GDGoC GITAM. All rights reserved.
               </div>
             </div>
             
@@ -242,7 +307,7 @@ export default function HomePage() {
                 <a href="#" className="block text-gray-600 hover:text-primary transition-colors">Privacy Policy</a>
                 <a href="#" className="block text-gray-600 hover:text-primary transition-colors">Terms of Service</a>
                 <a href="#" className="block text-gray-600 hover:text-primary transition-colors">Contact Us</a>
-                <a href="mailto:dsc@gitam.in" className="block text-gray-600 hover:text-primary transition-colors">dsc@gitam.in</a>
+                <a href="mailto:dsc.gitam@gmail.com" className="block text-gray-600 hover:text-primary transition-colors">dsc.gitam@gmail.com</a>
               </div>
             </div>
           </div>
