@@ -22,8 +22,8 @@ export default function Header() {
             <Image
               src="/GDG-Lockup-1Line-Black.png"
               alt="Google Developer Groups on Campus"
-              width={160}
-              height={32}
+              width={200}
+              height={40}
               className="h-8 w-auto object-contain"
             />
           </div>
