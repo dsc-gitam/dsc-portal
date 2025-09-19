@@ -5,21 +5,23 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary via-secondary to-success rounded-full"></div>
-              <h1 className="text-xl font-semibold text-gray-900 font-display">DSC GITAM Portal</h1>
+      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-primary-secondary-success rounded-2xl flex items-center justify-center">
+                <span className="text-white text-sm font-bold font-display">DSC</span>
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 font-display">DSC GITAM</h1>
             </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-primary transition-colors font-medium">
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm">
                 Home
               </Link>
-              <Link href="/recruitment" className="text-gray-700 hover:text-primary transition-colors font-medium">
+              <Link href="/recruitment" className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm">
                 Recruitment
               </Link>
-              <Link href="/auth/signin" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all shadow-sm hover:shadow-md font-medium">
+              <Link href="/auth/signin" className="bg-gray-900 text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-all shadow-sm hover:shadow-md font-medium text-sm">
                 Sign In
               </Link>
             </nav>
@@ -28,88 +30,117 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center py-12 lg:py-20">
-          {/* Left Content */}
-          <div className="text-center lg:text-left">
-            <div className="flex justify-center lg:justify-start mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-primary via-secondary to-success rounded-2xl flex items-center justify-center shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                <span className="text-white text-2xl font-bold font-display">DSC</span>
+      <main>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="pt-24 pb-16 lg:pt-32 lg:pb-24">
+            {/* Hero Content */}
+            <div className="text-center max-w-4xl mx-auto">
+              <div className="mb-8">
+                <div className="inline-flex items-center px-4 py-2 bg-gray-50 rounded-full text-sm text-gray-600 font-medium mb-8">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                  Applications open for 2025
+                </div>
+              </div>
+              
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-8 font-display leading-[1.1] tracking-tight">
+                Google Developer
+                <br />
+                <span className="bg-gradient-text-primary-secondary">
+                  Groups on Campus
+                </span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+                Join the core team at GITAM and help shape the future of technology on campus. 
+                Connect, learn, and make an impact with like-minded developers.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                <Link 
+                  href="/recruitment"
+                  className="btn-gradient-primary-secondary text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105 min-w-[200px] justify-center"
+                >
+                  Apply now
+                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+                
+                <Link 
+                  href="/about"
+                  className="border border-gray-200 text-gray-700 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 min-w-[200px] text-center"
+                >
+                  Learn more
+                </Link>
               </div>
             </div>
-            
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 font-display leading-tight">
-              Google Developer Groups
-              <br />
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                on Campus 2025
-              </span>
-            </h1>
-            
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Join the core team of DSC GITAM and help build the future of technology on campus. 
-              Connect with like-minded developers, learn new skills, and make an impact.
-            </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
-              <Link 
-                href="/recruitment"
-                className="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105 w-full sm:w-auto justify-center"
-              >
-                Apply for Core Team
-                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-              
-              <Link 
-                href="/about"
-                className="border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 w-full sm:w-auto text-center"
-              >
-                Learn More
-              </Link>
+            {/* Stats Section */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 font-display">500+</div>
+                <div className="text-sm text-gray-600 font-medium">Active Members</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 font-display">50+</div>
+                <div className="text-sm text-gray-600 font-medium">Events Hosted</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 font-display">25+</div>
+                <div className="text-sm text-gray-600 font-medium">Projects Built</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 font-display">15+</div>
+                <div className="text-sm text-gray-600 font-medium">Industry Partners</div>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Right Content - Image/Visual */}
-          <div className="relative">
-            <div className="relative bg-gradient-to-br from-blue-50 to-green-50 rounded-3xl p-8 lg:p-12 shadow-2xl">
-              {/* GDSC GITAM Community Image */}
-              <div className="aspect-square bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
-                <Image
-                  src="/gdsc-gitam.jpg"
-                  alt="GDSC GITAM Community"
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-cover"
-                  priority
-                />
+        {/* Community Image Section */}
+        <div className="bg-gray-50 py-16 lg:py-24">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="bg-white rounded-3xl p-8 lg:p-16 shadow-sm">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="order-2 lg:order-1">
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 font-display">
+                    Building the next generation of developers
+                  </h2>
+                  <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                    At DSC GITAM, we&apos;re more than just a community. We&apos;re a launchpad for innovation, 
+                    learning, and meaningful connections in the tech world.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-gray-700">Hands-on workshops and tech talks</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      <span className="text-gray-700">Mentorship from industry experts</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-gray-700">Real-world project collaboration</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="order-1 lg:order-2">
+                  <div className="relative">
+                    <Image
+                      src="/gdsc-gitam.jpg"
+                      alt="GDSC GITAM Community"
+                      width={600}
+                      height={400}
+                      className="w-full h-auto rounded-2xl shadow-lg"
+                      priority
+                    />
+                    <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-primary-secondary rounded-2xl flex items-center justify-center shadow-lg">
+                      <span className="text-white text-2xl font-bold">⚡</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              
-              {/* Stats Cards */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-xl p-4 shadow-md">
-                  <div className="text-2xl font-bold text-primary font-display">500+</div>
-                  <div className="text-sm text-gray-600">Members</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 shadow-md">
-                  <div className="text-2xl font-bold text-secondary font-display">50+</div>
-                  <div className="text-sm text-gray-600">Events</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 shadow-md">
-                  <div className="text-2xl font-bold text-success font-display">25+</div>
-                  <div className="text-sm text-gray-600">Projects</div>
-                </div>
-                <div className="bg-white rounded-xl p-4 shadow-md">
-                  <div className="text-2xl font-bold text-accent font-display">15+</div>
-                  <div className="text-sm text-gray-600">Partners</div>
-                </div>
-              </div>
-              
-              {/* Decorative elements */}
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-yellow-400 rounded-full opacity-60"></div>
-              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-red-400 rounded-full opacity-60"></div>
-              <div className="absolute top-1/3 -left-3 w-4 h-4 bg-blue-400 rounded-full opacity-60"></div>
             </div>
           </div>
         </div>
@@ -127,7 +158,7 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="group text-center p-8 rounded-2xl border border-gray-100 hover:shadow-xl hover:border-primary/20 transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 bg-gradient-primary-blue rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
@@ -137,7 +168,7 @@ export default function HomePage() {
             </div>
 
             <div className="group text-center p-8 rounded-2xl border border-gray-100 hover:shadow-xl hover:border-secondary/20 transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-red-600 rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 bg-gradient-secondary-red rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
@@ -147,7 +178,7 @@ export default function HomePage() {
             </div>
 
             <div className="group text-center p-8 rounded-2xl border border-gray-100 hover:shadow-xl hover:border-success/20 transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-success to-green-600 rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <div className="w-16 h-16 bg-gradient-success-green rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -160,7 +191,7 @@ export default function HomePage() {
 
         {/* Call to Action Section */}
         <section className="py-20">
-          <div className="bg-gradient-to-r from-primary via-secondary to-success rounded-3xl p-12 text-center text-white shadow-2xl">
+          <div className="bg-gradient-primary-secondary-success rounded-3xl p-12 text-center text-white shadow-2xl">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">Ready to Join Us?</h2>
             <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
               Take the first step towards becoming a part of the most exciting tech community on campus.
@@ -184,7 +215,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-primary to-success rounded-full"></div>
+                <div className="w-8 h-8 bg-gradient-primary-success rounded-full"></div>
                 <span className="text-gray-900 font-semibold font-display">DSC GITAM</span>
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
@@ -198,10 +229,10 @@ export default function HomePage() {
             <div>
               <h3 className="text-gray-900 font-semibold mb-4 font-display">Quick Links</h3>
               <div className="space-y-2">
-                <a href="/" className="block text-gray-600 hover:text-primary transition-colors">Home</a>
-                <a href="/recruitment" className="block text-gray-600 hover:text-primary transition-colors">Recruitment</a>
-                <a href="/about" className="block text-gray-600 hover:text-primary transition-colors">About Us</a>
-                <a href="/events" className="block text-gray-600 hover:text-primary transition-colors">Events</a>
+                <Link href="/" className="block text-gray-600 hover:text-primary transition-colors">Home</Link>
+                <Link href="/recruitment" className="block text-gray-600 hover:text-primary transition-colors">Recruitment</Link>
+                <Link href="/about" className="block text-gray-600 hover:text-primary transition-colors">About Us</Link>
+                <Link href="/events" className="block text-gray-600 hover:text-primary transition-colors">Events</Link>
               </div>
             </div>
             

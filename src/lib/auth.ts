@@ -9,14 +9,14 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       // Restrict to @gitam.in email addresses only
       if (user.email && user.email.endsWith("@gitam.in")) {
         return true;
       }
       return false;
     },
-    async session({ session, token }) {
+    async session({ session }) {
       return session;
     },
     async jwt({ token, user }) {

@@ -4,8 +4,14 @@ import { signIn, getProviders } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+interface Provider {
+  id: string;
+  name: string;
+  type: string;
+}
+
 export default function SignInPage() {
-  const [providers, setProviders] = useState<any>(null);
+  const [providers, setProviders] = useState<Record<string, Provider> | null>(null);
 
   useEffect(() => {
     const setUpProviders = async () => {
@@ -59,7 +65,7 @@ export default function SignInPage() {
         {/* Sign In Form */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-8">
           {providers &&
-            Object.values(providers).map((provider: any) => (
+            Object.values(providers).map((provider: Provider) => (
               <div key={provider.name} className="space-y-4">
                 <button
                   onClick={() => signIn(provider.id, { callbackUrl: "/" })}

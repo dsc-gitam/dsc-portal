@@ -1,5 +1,124 @@
 @import "tailwindcss";
 
+:root {
+  --background: #ffffff;
+  --foreground: #1f2937;
+  
+  /* Enhanced Google I/O 2024 Colors - More Vibrant */
+  --primary: #4285F4;
+  --secondary: #EA4335;
+  --accent: #FBBC05;
+  --success: #34A853;
+  
+  /* Extended Google I/O 2024 Palette */
+  --google-blue: #4285F4;
+  --google-red: #EA4335;
+  --google-yellow: #FBBC05;
+  --google-green: #34A853;
+  --google-blue-deep: #1a73e8;
+  --google-red-deep: #d33b2c;
+  --google-orange: #ff6d01;
+  --google-purple: #9c27b0;
+  --google-pink: #e91e63;
+  --google-teal: #0f9d58;
+  --google-lime: #8bc34a;
+}
+
+/* Google I/O 2024 Inspired Gradients - Multi-stop, Vibrant */
+.btn-gradient-primary-secondary {
+  background: linear-gradient(135deg, 
+    var(--primary) 0%, 
+    #6fa8f7 25%, 
+    #ff7b7b 75%, 
+    var(--secondary) 100%);
+  box-shadow: 0 8px 32px rgba(66, 133, 244, 0.3);
+}
+
+.bg-gradient-primary-secondary-success {
+  background: linear-gradient(135deg, 
+    var(--primary) 0%, 
+    #6fa8f7 20%, 
+    var(--secondary) 40%, 
+    #ff7b7b 60%, 
+    var(--success) 80%, 
+    #5cbf6a 100%);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+}
+
+.bg-gradient-primary-blue {
+  background: linear-gradient(135deg, 
+    var(--primary) 0%, 
+    #6fa8f7  30%, 
+    var(--google-blue-deep) 70%, 
+    #1557b0 100%);
+  box-shadow: 0 8px 24px rgba(66, 133, 244, 0.4);
+}
+
+.bg-gradient-secondary-red {
+  background: linear-gradient(135deg, 
+    var(--secondary) 0%, 
+    #ff7b7b 30%, 
+    var(--google-red-deep) 70%, 
+    #b52d20 100%);
+  box-shadow: 0 8px 24px rgba(234, 67, 53, 0.4);
+}
+
+.bg-gradient-success-green {
+  background: linear-gradient(135deg, 
+    var(--success) 0%, 
+    #5cbf6a 30%, 
+    var(--google-teal) 70%, 
+    #0d7344 100%);
+  box-shadow: 0 8px 24px rgba(52, 168, 83, 0.4);
+}
+
+.bg-gradient-primary-success {
+  background: linear-gradient(135deg, 
+    var(--primary) 0%, 
+    #6fa8f7 25%, 
+    #4fc3f7 50%, 
+    #66bb6a 75%, 
+    var(--success) 100%);
+}
+
+.bg-gradient-text-primary-secondary {
+  background: linear-gradient(135deg, 
+    var(--primary) 0%, 
+    #6fa8f7 25%, 
+    #ff7b7b 75%, 
+    var(--secondary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Additional Google I/O 2024 Gradient Variations */
+.bg-gradient-io2024-vibrant {
+  background: linear-gradient(135deg, 
+    var(--google-purple) 0%, 
+    var(--google-pink) 25%, 
+    var(--secondary) 50%, 
+    var(--google-orange) 75%, 
+    var(--accent) 100%);
+}
+
+.bg-gradient-io2024-cool {
+  background: linear-gradient(135deg, 
+    var(--primary) 0%, 
+    #6fa8f7 33%, 
+    var(--google-teal) 66%, 
+    var(--success) 100%);
+}
+
+.bg-gradient-io2024-warm {
+  background: linear-gradient(135deg, 
+    var(--accent) 0%, 
+    var(--google-orange) 33%, 
+    var(--secondary) 66%, 
+    var(--google-red-deep) 100%);
+}
+
 /* Google Sans Font Faces */
 @font-face {
   font-family: 'Google Sans';
@@ -47,11 +166,6 @@
   font-weight: 700;
   src: url('/fonts/GoogleSansDisplay-Bold-v1.27.ttf') format('truetype');
   font-display: swap;
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #1f2937;
 }
 
 body {

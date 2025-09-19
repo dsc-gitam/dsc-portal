@@ -42,7 +42,7 @@ export default function ConfirmationPage() {
           </h1>
           
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Thank you for applying to join the DSC GITAM core team! We've received your application 
+            Thank you for applying to join the DSC GITAM core team! We&apos;ve received your application 
             and sent a confirmation email to your GITAM email address.
           </p>
 
@@ -81,7 +81,7 @@ export default function ConfirmationPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="font-medium text-green-900">Interview Invitation</h3>
-                  <p className="text-green-700 text-sm">If shortlisted, you'll receive an email with instructions to book your interview slot.</p>
+                  <p className="text-green-700 text-sm">If shortlisted, you&apos;ll receive an email with instructions to book your interview slot.</p>
                 </div>
               </div>
               
@@ -123,7 +123,7 @@ export default function ConfirmationPage() {
               </li>
               <li className="flex items-start">
                 <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                Don't forget to check your spam/junk folder
+                Don&apos;t forget to check your spam/junk folder
               </li>
               <li className="flex items-start">
                 <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>

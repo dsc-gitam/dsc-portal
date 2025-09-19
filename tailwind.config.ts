@@ -9,18 +9,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#FFFFFF',
-        foreground: '#1F2937',
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        accent: 'var(--accent)',
+        success: 'var(--success)',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
         google: {
-          blue: '#4285F4',
-          red: '#EA4335',
-          yellow: '#FBBC05',
-          green: '#34A853',
+          blue: 'var(--google-blue)',
+          red: 'var(--google-red)',
+          yellow: 'var(--google-yellow)',
+          green: 'var(--google-green)',
         },
-        primary: '#4285F4',
-        secondary: '#EA4335',
-        accent: '#FBBC05',
-        success: '#34A853',
       },
       fontFamily: {
         sans: ['Google Sans', 'sans-serif'],
