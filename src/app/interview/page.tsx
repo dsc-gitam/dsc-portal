@@ -100,7 +100,7 @@ export default function InterviewBookingPage() {
             </h1>
             
             <p className="text-xl text-gray-600 mb-8">
-              Your interview slot has been successfully booked. We've sent a confirmation email with all the details.
+              Your interview slot has been successfully booked. We&apos;ve sent a confirmation email with all the details.
             </p>
 
             {selectedSlotData && (
@@ -262,7 +262,7 @@ export default function InterviewBookingPage() {
           <ul className="text-gray-700 space-y-2 text-sm">
             <li className="flex items-start">
               <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              Once booked, you'll receive a confirmation email with the Google Meet link
+              Once booked, you&apos;ll receive a confirmation email with the Google Meet link
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>

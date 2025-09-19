@@ -107,7 +107,7 @@ export default function HomePage() {
                     Building the next generation of developers
                   </h2>
                   <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                    At DSC GITAM, we're more than just a community. We're a launchpad for innovation, 
+                    At DSC GITAM, we&apos;re more than just a community. We&apos;re a launchpad for innovation, 
                     learning, and meaningful connections in the tech world.
                   </p>
                   <div className="space-y-4">
@@ -229,10 +229,10 @@ export default function HomePage() {
             <div>
               <h3 className="text-gray-900 font-semibold mb-4 font-display">Quick Links</h3>
               <div className="space-y-2">
-                <a href="/" className="block text-gray-600 hover:text-primary transition-colors">Home</a>
-                <a href="/recruitment" className="block text-gray-600 hover:text-primary transition-colors">Recruitment</a>
-                <a href="/about" className="block text-gray-600 hover:text-primary transition-colors">About Us</a>
-                <a href="/events" className="block text-gray-600 hover:text-primary transition-colors">Events</a>
+                <Link href="/" className="block text-gray-600 hover:text-primary transition-colors">Home</Link>
+                <Link href="/recruitment" className="block text-gray-600 hover:text-primary transition-colors">Recruitment</Link>
+                <Link href="/about" className="block text-gray-600 hover:text-primary transition-colors">About Us</Link>
+                <Link href="/events" className="block text-gray-600 hover:text-primary transition-colors">Events</Link>
               </div>
             </div>
             

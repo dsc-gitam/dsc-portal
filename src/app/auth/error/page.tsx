@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
@@ -103,7 +104,7 @@ export default function AuthErrorPage() {
           <div className="space-y-3">
             <div className="flex items-start">
               <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span className="text-gray-700">Make sure you're using your official GITAM email address ending with @gitam.in</span>
+              <span className="text-gray-700">Make sure you&apos;re using your official GITAM email address ending with @gitam.in</span>
             </div>
             <div className="flex items-start">
               <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
@@ -134,5 +135,13 @@ export default function AuthErrorPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthErrorContent />
+    </Suspense>
   );
 }
