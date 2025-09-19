@@ -3,9 +3,9 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "DSC GITAM Portal | Core Team Management",
+  title: "GDGoC GITAM Portal | Core Team Management",
   description: "Google Developer Groups on Campus 2025 - Core Team Management Portal",
-  keywords: ["DSC", "GITAM", "Google Developer Groups", "Core Team", "Recruitment"],
+  keywords: ["GDGoC", "GITAM", "Google Developer Groups", "Core Team", "Recruitment"],
 };
 
 export default function RootLayout({

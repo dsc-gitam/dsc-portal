@@ -119,6 +119,16 @@
     var(--google-red-deep) 100%);
 }
 
+.bg-gradient-io2024-main {
+  background: linear-gradient(135deg, 
+    #4285F4 0%, 
+    #34A853 25%, 
+    #FBBC05 50%, 
+    #EA4335 75%, 
+    #9C27B0 100%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
 /* Google Sans Font Faces */
 @font-face {
   font-family: 'Google Sans';

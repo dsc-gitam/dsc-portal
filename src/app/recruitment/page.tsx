@@ -1,12 +1,108 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { useSession, signIn } from "next-auth/react";
 
 export default function RecruitmentPage() {
+  const { data: session, status } = useSession();
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedTask, setSelectedTask] = useState("");
   const [showAvailabilityQuestion, setShowAvailabilityQuestion] = useState(false);
+  const [formData, setFormData] = useState<{[key: string]: string}>({});
+  const [progress, setProgress] = useState(0);
+
+  // Calculate progress based on filled fields
+  useEffect(() => {
+    const totalFields = 15; // Approximate number of required fields
+    const filledFields = Object.keys(formData).filter(key => formData[key]).length;
+    setProgress(Math.round((filledFields / totalFields) * 100));
+  }, [formData]);
+
+  // Load saved form data from localStorage
+  useEffect(() => {
+    const savedData = localStorage.getItem('recruitment-form-data');
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
+
+  // Save form data to localStorage
+  const saveFormData = (field: string, value: string) => {
+    const newFormData = { ...formData, [field]: value };
+    setFormData(newFormData);
+    localStorage.setItem('recruitment-form-data', JSON.stringify(newFormData));
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-primary-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-white text-xl font-bold">⏳</span>
+          </div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-white">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-3">
+                <Image
+                  src="/gdgoc_logo.png"
+                  alt="GDGoC Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain"
+                />
+                <h1 className="text-xl font-semibold text-gray-900 font-display">GDGoC GITAM Portal</h1>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Authentication Required */}
+        <main className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-primary-secondary rounded-2xl flex items-center justify-center shadow-lg">
+                <span className="text-white text-lg font-bold">🔒</span>
+              </div>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              Authentication Required
+            </h1>
+            <p className="text-gray-600 mb-8">
+              Please sign in with your GITAM email address to access the recruitment form.
+            </p>
+            <button
+              onClick={() => signIn('google')}
+              className="bg-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl"
+            >
+              Sign In to Continue
+            </button>
+            <div className="mt-6">
+              <Link 
+                href="/"
+                className="text-primary hover:text-blue-600 transition-colors"
+              >
+                ← Back to Home
+              </Link>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -14,8 +110,14 @@ export default function RecruitmentPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary via-secondary to-success rounded-full"></div>
-              <h1 className="text-xl font-semibold text-gray-900 font-display">DSC GITAM Portal</h1>
+              <Image
+                src="/gdgoc_logo.png"
+                alt="GDGoC Logo"
+                width={32}
+                height={32}
+                className="w-8 h-8 object-contain"
+              />
+              <h1 className="text-xl font-semibold text-gray-900 font-display">GDGoC GITAM Portal</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
               <Link href="/" className="text-gray-700 hover:text-primary transition-colors font-medium">
@@ -38,16 +140,33 @@ export default function RecruitmentPage() {
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-success rounded-2xl flex items-center justify-center shadow-xl">
-              <span className="text-white text-lg font-bold font-display">DSC</span>
+              <span className="text-white text-lg font-bold font-display">GDGoC</span>
             </div>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-display">
             Join the <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Core Team</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Apply to become a core team member of DSC GITAM and help shape the future of technology on campus.
+            Apply to become a core team member of GDGoC GITAM and help shape the future of technology on campus.
             Please fill out the form below with accurate information.
           </p>
+        </div>
+
+        {/* Progress Indicator */}
+        <div className="mb-8">
+          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">Form Progress</span>
+              <span className="text-sm font-bold text-primary">{progress}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-gradient-primary-secondary h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Your progress is automatically saved</p>
+          </div>
         </div>
 
         {/* Application Form */}
@@ -66,6 +185,8 @@ export default function RecruitmentPage() {
                     id="firstName"
                     name="firstName"
                     required
+                    value={formData.firstName || ""}
+                    onChange={(e) => saveFormData('firstName', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                     placeholder="Enter your first name"
                   />
@@ -79,6 +200,8 @@ export default function RecruitmentPage() {
                     id="lastName"
                     name="lastName"
                     required
+                    value={formData.lastName || ""}
+                    onChange={(e) => saveFormData('lastName', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                     placeholder="Enter your last name"
                   />

@@ -3,6 +3,7 @@
 import { signIn, getProviders } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Provider {
   id: string;
@@ -28,8 +29,14 @@ export default function SignInPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary via-secondary to-success rounded-full"></div>
-              <h1 className="text-xl font-semibold text-gray-900">DSC GITAM Portal</h1>
+              <Image
+                src="/gdgoc_logo.png"
+                alt="GDGoC Logo"
+                width={32}
+                height={32}
+                className="w-8 h-8 object-contain"
+              />
+              <h1 className="text-xl font-semibold text-gray-900">GDGoC GITAM Portal</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
               <Link href="/" className="text-gray-700 hover:text-primary transition-colors">
@@ -50,12 +57,16 @@ export default function SignInPage() {
       <main className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-success rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg font-bold">DSC</span>
-            </div>
+            <Image
+              src="/gdgoc_logo.png"
+              alt="GDGoC Logo"
+              width={64}
+              height={64}
+              className="w-16 h-16 object-contain"
+            />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-            Sign in to <span className="text-primary">DSC Portal</span>
+            Sign in to <span className="text-primary">GDGoC Portal</span>
           </h1>
           <p className="text-gray-600">
             Use your GITAM email address to access the portal
@@ -116,7 +127,7 @@ export default function SignInPage() {
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              Your information will be used solely for DSC recruitment purposes
+              Your information will be used solely for GDGoC recruitment purposes
             </li>
           </ul>
         </div>
@@ -137,8 +148,14 @@ export default function SignInPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <div className="w-6 h-6 bg-gradient-to-r from-primary to-success rounded-full"></div>
-              <span className="text-gray-600">DSC GITAM © 2025</span>
+              <Image
+                src="/gdgoc_logo.png"
+                alt="GDGoC Logo"
+                width={24}
+                height={24}
+                className="w-6 h-6 object-contain"
+              />
+              <span className="text-gray-600">GDGoC GITAM © 2025</span>
             </div>
             <div className="flex space-x-6">
               <a href="#" className="text-gray-600 hover:text-primary transition-colors">Privacy</a>

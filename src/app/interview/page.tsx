@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface TimeSlot {
   id: string;
@@ -66,8 +67,14 @@ export default function InterviewBookingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-primary via-secondary to-success rounded-full"></div>
-                <h1 className="text-xl font-semibold text-gray-900">DSC GITAM Portal</h1>
+                <Image
+                  src="/gdgoc_logo.png"
+                  alt="GDGoC Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain"
+                />
+                <h1 className="text-xl font-semibold text-gray-900">GDGoC GITAM Portal</h1>
               </div>
               <nav className="hidden md:flex space-x-8">
                 <Link href="/" className="text-gray-700 hover:text-primary transition-colors">
@@ -134,8 +141,14 @@ export default function InterviewBookingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary via-secondary to-success rounded-full"></div>
-              <h1 className="text-xl font-semibold text-gray-900">DSC GITAM Portal</h1>
+              <Image
+                src="/gdgoc_logo.png"
+                alt="GDGoC Logo"
+                width={32}
+                height={32}
+                className="w-8 h-8 object-contain"
+              />
+              <h1 className="text-xl font-semibold text-gray-900">GDGoC GITAM Portal</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
               <Link href="/" className="text-gray-700 hover:text-primary transition-colors">
