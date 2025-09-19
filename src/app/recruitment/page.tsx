@@ -6,16 +6,46 @@ import { useSession, signIn } from "next-auth/react";
 import Header from "@/components/Header";
 
 interface FormData {
+  // Personal Information
   firstName?: string;
   lastName?: string;
   email?: string;
   phone?: string;
+  
+  // Academic Information
+  studentId?: string;
+  yearOfStudy?: string;
+  branch?: string;
+  cgpa?: string;
+  
+  // Role Selection
   selectedRole?: string;
+  
+  // Technical Skills
   programmingLanguages?: string;
+  githubProfile?: string;
+  linkedinProfile?: string;
+  
+  // Motivation
   whyJoin?: string;
   howContribute?: string;
+  
+  // Experience
+  previousExperience?: string;
+  leadershipExperience?: string;
+  
+  // Technical Tasks
+  selectedTask?: string;
+  taskSubmission?: string;
+  
+  // Availability
+  availability?: string;
+  hoursPerWeek?: string;
+  
+  // Additional Information
   passionProject?: string;
   challengeProposal?: string;
+  additionalInfo?: string;
 }
 
 export default function RecruitmentPage() {
@@ -24,6 +54,7 @@ export default function RecruitmentPage() {
   const [progress, setProgress] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
   const requiredFields = useMemo(() => 
     ['firstName', 'lastName', 'email', 'selectedRole', 'programmingLanguages', 'whyJoin', 'howContribute', 'passionProject', 'challengeProposal'], 
@@ -53,6 +84,8 @@ export default function RecruitmentPage() {
       });
 
       if (!response.ok) throw new Error('Failed to save');
+      
+      setLastSaved(new Date());
     } catch (error) {
       console.error('Error saving data:', error);
       setError('Failed to save progress');
@@ -144,6 +177,14 @@ export default function RecruitmentPage() {
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
+            {lastSaved && (
+              <p className="text-xs text-gray-500 mt-2">
+                Last saved: {lastSaved.toLocaleString()}
+              </p>
+            )}
+            {isSaving && (
+              <p className="text-xs text-blue-600 mt-2">Saving...</p>
+            )}
           </div>
 
           {/* Save Button */}
@@ -233,6 +274,73 @@ export default function RecruitmentPage() {
               </div>
             </div>
 
+            {/* Academic Information */}
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Academic Information</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 mb-2">
+                    Student ID
+                  </label>
+                  <input
+                    type="text"
+                    id="studentId"
+                    name="studentId"
+                    value={formData.studentId || ""}
+                    onChange={(e) => saveFormData('studentId', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    placeholder="Enter your student ID"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="yearOfStudy" className="block text-sm font-medium text-gray-700 mb-2">
+                    Year of Study
+                  </label>
+                  <select
+                    id="yearOfStudy"
+                    name="yearOfStudy"
+                    value={formData.yearOfStudy || ""}
+                    onChange={(e) => saveFormData('yearOfStudy', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  >
+                    <option value="">Select year of study</option>
+                    <option value="1st">1st Year</option>
+                    <option value="2nd">2nd Year</option>
+                    <option value="3rd">3rd Year</option>
+                    <option value="4th">4th Year</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="branch" className="block text-sm font-medium text-gray-700 mb-2">
+                    Branch/Department
+                  </label>
+                  <input
+                    type="text"
+                    id="branch"
+                    name="branch"
+                    value={formData.branch || ""}
+                    onChange={(e) => saveFormData('branch', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    placeholder="e.g., Computer Science & Engineering"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="cgpa" className="block text-sm font-medium text-gray-700 mb-2">
+                    CGPA
+                  </label>
+                  <input
+                    type="text"
+                    id="cgpa"
+                    name="cgpa"
+                    value={formData.cgpa || ""}
+                    onChange={(e) => saveFormData('cgpa', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    placeholder="e.g., 8.5"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Role Selection */}
             <div className="border-b border-gray-200 pb-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Role Preference</h2>
@@ -262,20 +370,52 @@ export default function RecruitmentPage() {
             {/* Technical Skills */}
             <div className="border-b border-gray-200 pb-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Technical Skills</h2>
-              <div>
-                <label htmlFor="skills" className="block text-sm font-medium text-gray-700 mb-2">
-                  Programming Languages & Technologies *
-                </label>
-                <textarea
-                  id="skills"
-                  name="skills"
-                  required
-                  rows={3}
-                  value={formData.programmingLanguages || ""}
-                  onChange={(e) => saveFormData('programmingLanguages', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                  placeholder="e.g., Python, Java, JavaScript, React, Node.js, MongoDB, etc."
-                />
+              <div className="space-y-6">
+                <div>
+                  <label htmlFor="skills" className="block text-sm font-medium text-gray-700 mb-2">
+                    Programming Languages & Technologies *
+                  </label>
+                  <textarea
+                    id="skills"
+                    name="skills"
+                    required
+                    rows={3}
+                    value={formData.programmingLanguages || ""}
+                    onChange={(e) => saveFormData('programmingLanguages', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    placeholder="e.g., Python, Java, JavaScript, React, Node.js, MongoDB, etc."
+                  />
+                </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="githubProfile" className="block text-sm font-medium text-gray-700 mb-2">
+                      GitHub Profile
+                    </label>
+                    <input
+                      type="url"
+                      id="githubProfile"
+                      name="githubProfile"
+                      value={formData.githubProfile || ""}
+                      onChange={(e) => saveFormData('githubProfile', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                      placeholder="https://github.com/yourusername"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="linkedinProfile" className="block text-sm font-medium text-gray-700 mb-2">
+                      LinkedIn Profile
+                    </label>
+                    <input
+                      type="url"
+                      id="linkedinProfile"
+                      name="linkedinProfile"
+                      value={formData.linkedinProfile || ""}
+                      onChange={(e) => saveFormData('linkedinProfile', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                      placeholder="https://linkedin.com/in/yourusername"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -316,6 +456,41 @@ export default function RecruitmentPage() {
               </div>
             </div>
 
+            {/* Experience */}
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Experience</h2>
+              <div className="space-y-6">
+                <div>
+                  <label htmlFor="previousExperience" className="block text-sm font-medium text-gray-700 mb-2">
+                    Previous Experience
+                  </label>
+                  <textarea
+                    id="previousExperience"
+                    name="previousExperience"
+                    rows={4}
+                    value={formData.previousExperience || ""}
+                    onChange={(e) => saveFormData('previousExperience', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    placeholder="Describe any relevant previous experience..."
+                  />
+                </div>
+                <div>
+                  <label htmlFor="leadershipExperience" className="block text-sm font-medium text-gray-700 mb-2">
+                    Leadership Experience
+                  </label>
+                  <textarea
+                    id="leadershipExperience"
+                    name="leadershipExperience"
+                    rows={4}
+                    value={formData.leadershipExperience || ""}
+                    onChange={(e) => saveFormData('leadershipExperience', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    placeholder="Describe any leadership roles or experiences..."
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Passion Project */}
             <div className="border-b border-gray-200 pb-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">About Your Passion</h2>
@@ -350,6 +525,109 @@ export default function RecruitmentPage() {
                     placeholder="Identify a potential challenge and propose your solution..."
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Technical Tasks */}
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Technical Tasks</h2>
+              <div className="space-y-6">
+                <div>
+                  <label htmlFor="selectedTask" className="block text-sm font-medium text-gray-700 mb-2">
+                    Selected Task
+                  </label>
+                  <select
+                    id="selectedTask"
+                    name="selectedTask"
+                    value={formData.selectedTask || ""}
+                    onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  >
+                    <option value="">Select a task (if applicable)</option>
+                    <option value="web-dev">Web Development Project</option>
+                    <option value="mobile-app">Mobile App Development</option>
+                    <option value="data-analysis">Data Analysis Challenge</option>
+                    <option value="ui-design">UI/UX Design Task</option>
+                    <option value="content-creation">Content Creation Task</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="taskSubmission" className="block text-sm font-medium text-gray-700 mb-2">
+                    Task Submission
+                  </label>
+                  <textarea
+                    id="taskSubmission"
+                    name="taskSubmission"
+                    rows={4}
+                    value={formData.taskSubmission || ""}
+                    onChange={(e) => saveFormData('taskSubmission', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                    placeholder="Provide details about your task submission or approach..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Availability */}
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Availability</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="availability" className="block text-sm font-medium text-gray-700 mb-2">
+                    Availability
+                  </label>
+                  <select
+                    id="availability"
+                    name="availability"
+                    value={formData.availability || ""}
+                    onChange={(e) => saveFormData('availability', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  >
+                    <option value="">Select your availability</option>
+                    <option value="weekdays">Weekdays only</option>
+                    <option value="weekends">Weekends only</option>
+                    <option value="both">Both weekdays and weekends</option>
+                    <option value="flexible">Flexible schedule</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="hoursPerWeek" className="block text-sm font-medium text-gray-700 mb-2">
+                    Hours per Week
+                  </label>
+                  <select
+                    id="hoursPerWeek"
+                    name="hoursPerWeek"
+                    value={formData.hoursPerWeek || ""}
+                    onChange={(e) => saveFormData('hoursPerWeek', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  >
+                    <option value="">Select hours per week</option>
+                    <option value="1-5">1-5 hours</option>
+                    <option value="6-10">6-10 hours</option>
+                    <option value="11-15">11-15 hours</option>
+                    <option value="16-20">16-20 hours</option>
+                    <option value="20+">20+ hours</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Additional Information */}
+            <div className="border-b border-gray-200 pb-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Additional Information</h2>
+              <div>
+                <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 mb-2">
+                  Additional Information
+                </label>
+                <textarea
+                  id="additionalInfo"
+                  name="additionalInfo"
+                  rows={4}
+                  value={formData.additionalInfo || ""}
+                  onChange={(e) => saveFormData('additionalInfo', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                  placeholder="Any additional information you'd like to share..."
+                />
               </div>
             </div>
 
