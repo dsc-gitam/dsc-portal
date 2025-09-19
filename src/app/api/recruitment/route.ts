@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
+import { getPrismaClient, isDatabaseAvailable } from '@/lib/prisma';
 import type { Session } from 'next-auth';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let prisma: any = null;
-
-// Conditionally import prisma only if we can
-try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { prisma: prismaClient } = require('@/lib/prisma');
-  prisma = prismaClient;
-} catch (error) {
-  console.warn("Prisma client not available during build:", (error as Error).message);
-}
 
 export async function GET() {
   try {
@@ -23,6 +12,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    if (!isDatabaseAvailable()) {
+      return NextResponse.json({ error: 'Database not available' }, { status: 503 });
+    }
+
+    const prisma = await getPrismaClient();
     if (!prisma) {
       return NextResponse.json({ error: 'Database not available' }, { status: 503 });
     }
@@ -55,6 +49,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    if (!isDatabaseAvailable()) {
+      return NextResponse.json({ error: 'Database not available' }, { status: 503 });
+    }
+
+    const prisma = await getPrismaClient();
     if (!prisma) {
       return NextResponse.json({ error: 'Database not available' }, { status: 503 });
     }
@@ -110,6 +109,11 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    if (!isDatabaseAvailable()) {
+      return NextResponse.json({ error: 'Database not available' }, { status: 503 });
+    }
+
+    const prisma = await getPrismaClient();
     if (!prisma) {
       return NextResponse.json({ error: 'Database not available' }, { status: 503 });
     }
