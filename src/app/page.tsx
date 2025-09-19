@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HomePage() {
   return (
@@ -73,15 +74,16 @@ export default function HomePage() {
           {/* Right Content - Image/Visual */}
           <div className="relative">
             <div className="relative bg-gradient-to-br from-blue-50 to-green-50 rounded-3xl p-8 lg:p-12 shadow-2xl">
-              {/* Placeholder for GDSC GITAM image */}
-              <div className="aspect-square bg-white rounded-2xl shadow-lg flex items-center justify-center mb-6">
-                <div className="text-center">
-                  <div className="w-24 h-24 bg-gradient-to-br from-primary via-secondary via-accent to-success rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
-                    <span className="text-white text-3xl font-bold font-display">GDG</span>
-                  </div>
-                  <p className="text-gray-600 font-medium">DSC GITAM</p>
-                  <p className="text-sm text-gray-500">Community Image</p>
-                </div>
+              {/* GDSC GITAM Community Image */}
+              <div className="aspect-square bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
+                <Image
+                  src="/gdsc-gitam.jpg"
+                  alt="GDSC GITAM Community"
+                  width={400}
+                  height={400}
+                  className="w-full h-full object-cover"
+                  priority
+                />
               </div>
               
               {/* Stats Cards */}
