@@ -711,7 +711,7 @@ export default function RecruitmentPage() {
             <div className="flex justify-center pt-8">
               <button
                 type="submit"
-                className="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105"
+                className="bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105"
               >
                 Submit Application
                 <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
