@@ -1,16 +1,5 @@
 import GoogleProvider from "next-auth/providers/google";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let prisma: any = null;
-
-// Conditionally import prisma only if we can
-try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { prisma: prismaClient } = require("./prisma");
-  prisma = prismaClient;
-} catch (error) {
-  console.warn("Prisma client not available during build:", (error as Error).message);
-}
+import { getPrismaClient, isDatabaseAvailable } from "./prisma";
 
 export const authOptions = {
   providers: [
@@ -25,20 +14,23 @@ export const authOptions = {
       // Restrict to @gitam.in email addresses only
       if (user.email && user.email.includes("gitam")) {
         // Create or update user in database
-        if (prisma) {
+        if (isDatabaseAvailable()) {
           try {
-            await prisma.user.upsert({
-              where: { email: user.email },
-              update: {
-                name: user.name,
-                image: user.image,
-              },
-              create: {
-                email: user.email,
-                name: user.name,
-                image: user.image,
-              },
-            });
+            const prisma = await getPrismaClient();
+            if (prisma) {
+              await prisma.user.upsert({
+                where: { email: user.email },
+                update: {
+                  name: user.name,
+                  image: user.image,
+                },
+                create: {
+                  email: user.email,
+                  name: user.name,
+                  image: user.image,
+                },
+              });
+            }
           } catch (error) {
             console.error("Database error during sign in:", error);
             // Continue with sign in even if database update fails
@@ -50,13 +42,16 @@ export const authOptions = {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session }: { session: any }) {
-      if (session.user?.email && prisma) {
+      if (session.user?.email && isDatabaseAvailable()) {
         try {
-          const user = await prisma.user.findUnique({
-            where: { email: session.user.email },
-          });
-          if (user) {
-            session.user.id = user.id;
+          const prisma = await getPrismaClient();
+          if (prisma) {
+            const user = await prisma.user.findUnique({
+              where: { email: session.user.email },
+            });
+            if (user) {
+              session.user.id = user.id;
+            }
           }
         } catch (error) {
           console.error("Database error during session:", error);
