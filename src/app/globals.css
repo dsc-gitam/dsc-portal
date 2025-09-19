@@ -132,6 +132,37 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* I/O 2024 Card Styles with gradient borders */
+.io2024-card-blue {
+  background: white;
+  border: 2px solid #000;
+  border-bottom: 4px solid transparent;
+  background-image: linear-gradient(white, white), 
+                    linear-gradient(135deg, var(--primary) 0%, #6fa8f7 30%, var(--google-blue-deep) 70%, #1557b0 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.io2024-card-red {
+  background: white;
+  border: 2px solid #000;
+  border-bottom: 4px solid transparent;
+  background-image: linear-gradient(white, white), 
+                    linear-gradient(135deg, var(--secondary) 0%, #ff7b7b 30%, var(--google-red-deep) 70%, #b52d20 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.io2024-card-green {
+  background: white;
+  border: 2px solid #000;
+  border-bottom: 4px solid transparent;
+  background-image: linear-gradient(white, white), 
+                    linear-gradient(135deg, var(--success) 0%, #5cbf6a 30%, var(--google-teal) 70%, #0d7344 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
 /* Google Sans Font Faces */
 @font-face {
   font-family: 'Google Sans';
