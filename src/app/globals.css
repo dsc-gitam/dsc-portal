@@ -22,16 +22,28 @@
   --google-pink: #e91e63;
   --google-teal: #0f9d58;
   --google-lime: #8bc34a;
+  
+  /* I/O 2024 Specific Colors */
+  --io2024-yellow: #FFCB32;
+  --io2024-orange: #F46831;
+  --io2024-purple-light: #9F6CD4;
+  --io2024-blue-light: #5382EB;
 }
 
 /* Google I/O 2024 Inspired Gradients - Multi-stop, Vibrant */
 .btn-gradient-primary-secondary {
-  background: linear-gradient(135deg, 
-    var(--primary) 0%, 
-    #6fa8f7 25%, 
-    #ff7b7b 75%, 
-    var(--secondary) 100%);
+  background: linear-gradient(90deg, #4285F4 -36.98%, #4285F4 22.31%, #34A853 78.95%, #34A853 132.93%);
   box-shadow: 0 8px 32px rgba(66, 133, 244, 0.3);
+}
+
+.btn-gradient-io2024-profile {
+  background: linear-gradient(90deg, #FFCB32 -0.15%, #FFCB32 17.85%, #F46831 52.85%, #EA4335 78.85%, #EA4335 99.85%);
+  box-shadow: 0 8px 32px rgba(244, 180, 0, 0.3);
+}
+
+.btn-gradient-io2024-community {
+  background: linear-gradient(270deg, #5382EB 1.91%, #5382EB 25.69%, #9F6CD4 51.37%, #EA4335 79.9%, #EA4335 97.02%);
+  box-shadow: 0 8px 32px rgba(83, 130, 235, 0.3);
 }
 
 .bg-gradient-primary-secondary-success {
@@ -93,39 +105,30 @@
   color: transparent;
 }
 
-/* Additional Google I/O 2024 Gradient Variations */
-.bg-gradient-io2024-vibrant {
-  background: linear-gradient(135deg, 
-    var(--google-purple) 0%, 
-    var(--google-pink) 25%, 
-    var(--secondary) 50%, 
-    var(--google-orange) 75%, 
-    var(--accent) 100%);
+/* Google I/O 2024 Official Gradients - Exact matches from I/O 2024 website */
+.bg-gradient-io2024-general {
+  background: linear-gradient(90deg, #4285F4 -36.98%, #4285F4 22.31%, #34A853 78.95%, #34A853 132.93%);
 }
 
-.bg-gradient-io2024-cool {
-  background: linear-gradient(135deg, 
-    var(--primary) 0%, 
-    #6fa8f7 33%, 
-    var(--google-teal) 66%, 
-    var(--success) 100%);
+.bg-gradient-io2024-registration {
+  background: linear-gradient(270deg, #FFCB32 6.94%, #FFCB32 27.99%, #34A853 73.59%, #34A853 94.64%);
 }
 
-.bg-gradient-io2024-warm {
-  background: linear-gradient(135deg, 
-    var(--accent) 0%, 
-    var(--google-orange) 33%, 
-    var(--secondary) 66%, 
-    var(--google-red-deep) 100%);
+.bg-gradient-io2024-profile {
+  background: linear-gradient(90deg, #FFCB32 -0.15%, #FFCB32 17.85%, #F46831 52.85%, #EA4335 78.85%, #EA4335 99.85%);
 }
 
+.bg-gradient-io2024-community {
+  background: linear-gradient(270deg, #5382EB 1.91%, #5382EB 25.69%, #9F6CD4 51.37%, #EA4335 79.9%, #EA4335 97.02%);
+}
+
+.bg-gradient-io2024-terms {
+  background: linear-gradient(90deg, #4285F4 -36.98%, #4285F4 22.31%, #34A853 78.95%, #34A853 132.93%);
+}
+
+/* Updated main gradient to match I/O 2024 style */
 .bg-gradient-io2024-main {
-  background: linear-gradient(135deg, 
-    #4285F4 0%, 
-    #34A853 25%, 
-    #FBBC05 50%, 
-    #EA4335 75%, 
-    #9C27B0 100%);
+  background: linear-gradient(90deg, #4285F4 -36.98%, #4285F4 22.31%, #34A853 78.95%, #34A853 132.93%);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
