@@ -41,21 +41,21 @@ export default function Header() {
                 <div className="relative group">
                   <button className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
                     <Image
-                      src={session.user.image || "/default-avatar.png"}
-                      alt={session.user.name || "Profile"}
+                      src={session.user?.image || "/default-avatar.png"}
+                      alt={session.user?.name || "Profile"}
                       width={32}
                       height={32}
                       className="w-8 h-8 rounded-full object-cover"
                     />
-                    <span className="text-sm font-medium text-gray-700">{session.user.name}</span>
+                    <span className="text-sm font-medium text-gray-700">{session.user?.name}</span>
                   </button>
                   
                   {/* Dropdown Menu */}
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     <div className="py-2">
                       <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900">{session.user.name}</p>
-                        <p className="text-xs text-gray-500">{session.user.email}</p>
+                        <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
+                        <p className="text-xs text-gray-500">{session.user?.email}</p>
                       </div>
                       <Link
                         href="/recruitment"
