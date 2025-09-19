@@ -4,35 +4,191 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
+import Header from "@/components/Header";
+
+interface FormData {
+  // Personal Information
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  
+  // Academic Information
+  studentId?: string;
+  yearOfStudy?: string;
+  branch?: string;
+  cgpa?: string;
+  
+  // Role Selection
+  selectedRole?: string;
+  
+  // Technical Skills
+  programmingLanguages?: string;
+  githubProfile?: string;
+  linkedinProfile?: string;
+  
+  // Motivation
+  whyJoin?: string;
+  howContribute?: string;
+  
+  // Experience
+  previousExperience?: string;
+  leadershipExperience?: string;
+  
+  // Technical Tasks
+  selectedTask?: string;
+  taskSubmission?: string;
+  
+  // Availability
+  availability?: string;
+  hoursPerWeek?: string;
+  
+  // Additional Information
+  passionProject?: string;
+  challengeProposal?: string;
+  additionalInfo?: string;
+}
 
 export default function RecruitmentPage() {
   const { data: session, status } = useSession();
-  const [selectedRole, setSelectedRole] = useState("");
-  const [selectedTask, setSelectedTask] = useState("");
-  const [showAvailabilityQuestion, setShowAvailabilityQuestion] = useState(false);
-  const [formData, setFormData] = useState<{[key: string]: string}>({});
+  const [formData, setFormData] = useState<FormData>({});
   const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [error, setError] = useState("");
 
-  // Calculate progress based on filled fields
+  // Define required fields for progress calculation
+  const requiredFields = [
+    'firstName', 'lastName', 'email', 'phone',
+    'studentId', 'yearOfStudy', 'branch', 'cgpa',
+    'selectedRole', 'programmingLanguages', 'whyJoin', 'howContribute',
+    'availability', 'hoursPerWeek', 'passionProject', 'challengeProposal'
+  ];
+
+  // Calculate progress based on filled required fields
   useEffect(() => {
-    const totalFields = 15; // Approximate number of required fields
-    const filledFields = Object.keys(formData).filter(key => formData[key]).length;
-    setProgress(Math.round((filledFields / totalFields) * 100));
+    const filledFields = requiredFields.filter(field => formData[field as keyof FormData]?.trim()).length;
+    const newProgress = Math.round((filledFields / requiredFields.length) * 100);
+    setProgress(newProgress);
   }, [formData]);
 
-  // Load saved form data from localStorage
+  // Load saved form data from database
   useEffect(() => {
-    const savedData = localStorage.getItem('recruitment-form-data');
-    if (savedData) {
-      setFormData(JSON.parse(savedData));
+    if (session?.user?.email) {
+      loadApplicationData();
     }
-  }, []);
+  }, [session]);
 
-  // Save form data to localStorage
-  const saveFormData = (field: string, value: string) => {
-    const newFormData = { ...formData, [field]: value };
-    setFormData(newFormData);
-    localStorage.setItem('recruitment-form-data', JSON.stringify(newFormData));
+  const loadApplicationData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/recruitment');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.application) {
+          const { application } = data;
+          setFormData({
+            firstName: application.firstName || '',
+            lastName: application.lastName || '',
+            email: application.email || session?.user?.email || '',
+            phone: application.phone || '',
+            studentId: application.studentId || '',
+            yearOfStudy: application.yearOfStudy || '',
+            branch: application.branch || '',
+            cgpa: application.cgpa || '',
+            selectedRole: application.selectedRole || '',
+            programmingLanguages: application.programmingLanguages || '',
+            githubProfile: application.githubProfile || '',
+            linkedinProfile: application.linkedinProfile || '',
+            whyJoin: application.whyJoin || '',
+            howContribute: application.howContribute || '',
+            previousExperience: application.previousExperience || '',
+            leadershipExperience: application.leadershipExperience || '',
+            selectedTask: application.selectedTask || '',
+            taskSubmission: application.taskSubmission || '',
+            availability: application.availability || '',
+            hoursPerWeek: application.hoursPerWeek || '',
+            passionProject: application.passionProject || '',
+            challengeProposal: application.challengeProposal || '',
+            additionalInfo: application.additionalInfo || '',
+          });
+          setLastSaved(new Date(application.updatedAt));
+        } else {
+          // Pre-fill email from session
+          setFormData(prev => ({ ...prev, email: session?.user?.email || '' }));
+        }
+      }
+    } catch (error) {
+      console.error('Error loading application data:', error);
+      setError('Failed to load saved data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const saveFormData = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const saveToDatabase = async (showSuccessMessage = true) => {
+    if (!session?.user?.email) return;
+    
+    try {
+      setIsSaving(true);
+      setError('');
+      
+      const response = await fetch('/api/recruitment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setLastSaved(new Date());
+        if (showSuccessMessage) {
+          // You could show a toast notification here
+        }
+      } else {
+        throw new Error('Failed to save');
+      }
+    } catch (error) {
+      console.error('Error saving data:', error);
+      setError('Failed to save progress');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const submitApplication = async () => {
+    if (!session?.user?.email) return;
+    
+    try {
+      setIsSaving(true);
+      setError('');
+      
+      const response = await fetch('/api/recruitment', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        // Redirect to confirmation page
+        window.location.href = '/confirmation';
+      } else {
+        throw new Error('Failed to submit');
+      }
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      setError('Failed to submit application');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (status === "loading") {
@@ -51,24 +207,7 @@ export default function RecruitmentPage() {
   if (!session) {
     return (
       <div className="min-h-screen bg-white">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-3">
-                <Image
-                  src="/gdgoc_logo.png"
-                  alt="GDGoC Logo"
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 object-contain"
-                />
-                <h1 className="text-xl font-semibold text-gray-900 font-display">GDGoC GITAM Portal</h1>
-              </div>
-            </div>
-          </div>
-        </header>
-
+        <Header />
         {/* Authentication Required */}
         <main className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
@@ -85,7 +224,7 @@ export default function RecruitmentPage() {
             </p>
             <button
               onClick={() => signIn('google')}
-              className="bg-[var(--primary)] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl"
+              className="bg-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl"
             >
               Sign In to Continue
             </button>
@@ -104,74 +243,65 @@ export default function RecruitmentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <Image
-                src="/gdgoc_logo.png"
-                alt="GDGoC Logo"
-                width={32}
-                height={32}
-                className="w-8 h-8 object-contain"
-              />
-              <h1 className="text-xl font-semibold text-gray-900 font-display">GDGoC GITAM Portal</h1>
-            </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-[var(--primary)] transition-colors font-medium">
-                Home
-              </Link>
-              <Link href="/recruitment" className="text-[var(--primary)] font-bold">
-                Recruitment
-              </Link>
-              <Link href="/auth/signin" className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all shadow-sm hover:shadow-md font-medium">
-                Sign In
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary via-secondary to-success rounded-2xl flex items-center justify-center shadow-xl">
-              <span className="text-white text-lg font-bold font-display">GDGoC</span>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header Section */}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 mb-8">
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 bg-gradient-primary-secondary rounded-2xl flex items-center justify-center shadow-lg">
+                <span className="text-white text-2xl font-bold">📝</span>
+              </div>
             </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-display">
+              GDGoC GITAM <span className="text-primary">Core Team Application</span>
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Join the core team and help shape the future of technology at GITAM University.
+            </p>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-display">
-            Join the <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Core Team</span>
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Apply to become a core team member of GDGoC GITAM and help shape the future of technology on campus.
-            Please fill out the form below with accurate information.
-          </p>
-        </div>
 
-        {/* Progress Indicator */}
-        <div className="mb-8">
-          <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">Form Progress</span>
-              <span className="text-sm font-bold text-primary">{progress}%</span>
+          {/* Progress Bar */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-gray-700">Application Progress</span>
+              <span className="text-sm font-medium text-primary">{progress}% complete</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-3">
               <div 
-                className="bg-gradient-primary-secondary h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-primary-secondary h-3 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Your progress is automatically saved</p>
+            {lastSaved && (
+              <p className="text-xs text-gray-500 mt-2">
+                Last saved: {lastSaved.toLocaleString()}
+              </p>
+            )}
+            {isSaving && (
+              <p className="text-xs text-blue-600 mt-2">Saving...</p>
+            )}
           </div>
-        </div>
 
+          {/* Save and Error Messages */}
+          <div className="mt-4 flex justify-between items-center">
+            <button
+              onClick={() => saveToDatabase()}
+              disabled={isSaving || isLoading}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isSaving ? 'Saving...' : 'Save Progress'}
+            </button>
+            
+            {error && (
+              <div className="text-red-600 text-sm">{error}</div>
+            )}
         {/* Application Form */}
         <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8">
-          <form className="space-y-8">
+          <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
             {/* Personal Information */}
             <div className="border-b border-gray-200 pb-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Personal Information</h2>
@@ -216,6 +346,8 @@ export default function RecruitmentPage() {
                     name="email"
                     required
                     pattern=".*@gitam\.in$"
+                    value={formData.email || ""}
+                    onChange={(e) => saveFormData('email', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                     placeholder="your.name@gitam.in"
                   />
@@ -230,6 +362,8 @@ export default function RecruitmentPage() {
                     id="phone"
                     name="phone"
                     required
+                    value={formData.phone || ""}
+                    onChange={(e) => saveFormData('phone', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                     placeholder="+91 9876543210"
                   />
@@ -250,6 +384,8 @@ export default function RecruitmentPage() {
                     id="studentId"
                     name="studentId"
                     required
+                    value={formData.studentId || ""}
+                    onChange={(e) => saveFormData('studentId', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                     placeholder="Enter your student ID"
                   />
@@ -262,6 +398,8 @@ export default function RecruitmentPage() {
                     id="year"
                     name="year"
                     required
+                    value={formData.yearOfStudy || ""}
+                    onChange={(e) => saveFormData('yearOfStudy', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   >
                     <option value="">Select your year</option>
@@ -279,6 +417,8 @@ export default function RecruitmentPage() {
                     id="branch"
                     name="branch"
                     required
+                    value={formData.branch || ""}
+                    onChange={(e) => saveFormData('branch', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                   >
                     <option value="">Select your branch</option>
@@ -482,10 +622,10 @@ export default function RecruitmentPage() {
                   id="role"
                   name="role"
                   required
-                  value={selectedRole}
+                  value={formData.selectedRole || ""}
                   onChange={(e) => {
-                    setSelectedRole(e.target.value);
-                    setSelectedTask(""); // Reset selected task when role changes
+                    saveFormData('selectedRole', e.target.value);
+                    saveFormData('selectedTask', ""); // Reset selected task when role changes
                   }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                 >
@@ -501,12 +641,12 @@ export default function RecruitmentPage() {
             </div>
 
             {/* Department-Specific Tasks - Conditional Rendering */}
-            {selectedRole && (
+            {formData.selectedRole && (
               <div className="border-b border-gray-200 pb-8">
                 <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Department-Specific Tasks</h2>
                 
                 {/* Technical Role Tasks */}
-                {selectedRole === "technical" && (
+                {formData.selectedRole === "technical" && (
                   <div className="space-y-6">
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <h3 className="font-medium text-blue-900 mb-2">Technical Challenge</h3>
@@ -522,8 +662,8 @@ export default function RecruitmentPage() {
                           id="tech-task-1"
                           name="technicalTask"
                           value="events-webpage"
-                          checked={selectedTask === "events-webpage"}
-                          onChange={(e) => setSelectedTask(e.target.value)}
+                          checked={formData.selectedTask === "events-webpage"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="tech-task-1" className="text-sm text-gray-700">
@@ -536,8 +676,8 @@ export default function RecruitmentPage() {
                           id="tech-task-2"
                           name="technicalTask"
                           value="hello-world-app"
-                          checked={selectedTask === "hello-world-app"}
-                          onChange={(e) => setSelectedTask(e.target.value)}
+                          checked={formData.selectedTask === "hello-world-app"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="tech-task-2" className="text-sm text-gray-700">
@@ -550,8 +690,8 @@ export default function RecruitmentPage() {
                           id="tech-task-3"
                           name="technicalTask"
                           value="api-script"
-                          checked={selectedTask === "api-script"}
-                          onChange={(e) => setSelectedTask(e.target.value)}
+                          checked={formData.selectedTask === "api-script"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="tech-task-3" className="text-sm text-gray-700">
@@ -559,7 +699,7 @@ export default function RecruitmentPage() {
                         </label>
                       </div>
                     </div>
-                    {selectedTask && (
+                    {formData.selectedTask && (
                       <div>
                         <label htmlFor="taskSubmission" className="block text-sm font-medium text-gray-700 mb-2">
                           GitHub Repository or Live Demo Link *
@@ -569,6 +709,8 @@ export default function RecruitmentPage() {
                           id="taskSubmission"
                           name="taskSubmission"
                           required
+                          value={formData.taskSubmission || ""}
+                          onChange={(e) => saveFormData('taskSubmission', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                           placeholder="https://github.com/username/project or https://your-demo.com"
                         />
@@ -578,7 +720,7 @@ export default function RecruitmentPage() {
                 )}
 
                 {/* Marketing & Creative Role Tasks */}
-                {(selectedRole === "marketing" || selectedRole === "design") && (
+                {(formData.selectedRole === "marketing" || formData.selectedRole === "design") && (
                   <div className="space-y-6">
                     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                       <h3 className="font-medium text-red-900 mb-2">Marketing & Creative Challenge</h3>
@@ -593,8 +735,8 @@ export default function RecruitmentPage() {
                           id="marketing-task-1"
                           name="marketingTask"
                           value="social-media-graphic"
-                          checked={selectedTask === "social-media-graphic"}
-                          onChange={(e) => setSelectedTask(e.target.value)}
+                          checked={formData.selectedTask === "social-media-graphic"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="marketing-task-1" className="text-sm text-gray-700">
@@ -607,8 +749,8 @@ export default function RecruitmentPage() {
                           id="marketing-task-2"
                           name="marketingTask"
                           value="newsletter-draft"
-                          checked={selectedTask === "newsletter-draft"}
-                          onChange={(e) => setSelectedTask(e.target.value)}
+                          checked={formData.selectedTask === "newsletter-draft"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="marketing-task-2" className="text-sm text-gray-700">
@@ -621,8 +763,8 @@ export default function RecruitmentPage() {
                           id="marketing-task-3"
                           name="marketingTask"
                           value="video-reel"
-                          checked={selectedTask === "video-reel"}
-                          onChange={(e) => setSelectedTask(e.target.value)}
+                          checked={formData.selectedTask === "video-reel"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="marketing-task-3" className="text-sm text-gray-700">
@@ -630,7 +772,7 @@ export default function RecruitmentPage() {
                         </label>
                       </div>
                     </div>
-                    {selectedTask && (
+                    {formData.selectedTask && (
                       <div>
                         <label htmlFor="taskSubmission" className="block text-sm font-medium text-gray-700 mb-2">
                           Link to Your Work *
@@ -640,6 +782,8 @@ export default function RecruitmentPage() {
                           id="taskSubmission"
                           name="taskSubmission"
                           required
+                          value={formData.taskSubmission || ""}
+                          onChange={(e) => saveFormData('taskSubmission', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                           placeholder="https://drive.google.com/... or https://your-work-link.com"
                         />
@@ -649,7 +793,7 @@ export default function RecruitmentPage() {
                 )}
 
                 {/* Operations & Partnerships Role Tasks */}
-                {(selectedRole === "events" || selectedRole === "content" || selectedRole === "lead") && (
+                {(formData.selectedRole === "events" || formData.selectedRole === "content" || formData.selectedRole === "lead") && (
                   <div className="space-y-6">
                     <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                       <h3 className="font-medium text-green-900 mb-2">Operations & Partnerships Challenge</h3>
@@ -664,8 +808,8 @@ export default function RecruitmentPage() {
                           id="ops-task-1"
                           name="operationsTask"
                           value="partnership-email"
-                          checked={selectedTask === "partnership-email"}
-                          onChange={(e) => setSelectedTask(e.target.value)}
+                          checked={formData.selectedTask === "partnership-email"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="ops-task-1" className="text-sm text-gray-700">
@@ -678,8 +822,8 @@ export default function RecruitmentPage() {
                           id="ops-task-2"
                           name="operationsTask"
                           value="project-outline"
-                          checked={selectedTask === "project-outline"}
-                          onChange={(e) => setSelectedTask(e.target.value)}
+                          checked={formData.selectedTask === "project-outline"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
                           className="mt-1 text-primary focus:ring-primary"
                         />
                         <label htmlFor="ops-task-2" className="text-sm text-gray-700">
@@ -687,7 +831,7 @@ export default function RecruitmentPage() {
                         </label>
                       </div>
                     </div>
-                    {selectedTask && (
+                    {formData.selectedTask && (
                       <div>
                         <label htmlFor="taskSubmission" className="block text-sm font-medium text-gray-700 mb-2">
                           Your Response *
@@ -697,6 +841,8 @@ export default function RecruitmentPage() {
                           name="taskSubmission"
                           required
                           rows={6}
+                          value={formData.taskSubmission || ""}
+                          onChange={(e) => saveFormData('taskSubmission', e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                           placeholder="Enter your detailed response here..."
                         />
@@ -710,10 +856,12 @@ export default function RecruitmentPage() {
             {/* Submit Button */}
             <div className="flex justify-center pt-8">
               <button
-                type="submit"
-                className="bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)] text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105"
+                type="button"
+                onClick={submitApplication}
+                disabled={isSaving || progress < 80}
+                className="bg-gradient-primary-secondary text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit Application
+                {isSaving ? 'Submitting...' : 'Submit Application'}
                 <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>

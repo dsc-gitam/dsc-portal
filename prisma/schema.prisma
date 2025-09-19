@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    String @id @default(cuid())
+  email String @unique
+  name  String?
+  image String?
+  
+  applications RecruitmentApplication[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("users")
+}
+
+model RecruitmentApplication {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Personal Information
+  firstName          String?
+  lastName           String?
+  email              String?
+  phone              String?
+  
+  // Academic Information
+  studentId          String?
+  yearOfStudy        String?
+  branch             String?
+  cgpa               String?
+  
+  // Role Selection
+  selectedRole       String?
+  
+  // Technical Skills
+  programmingLanguages String?
+  githubProfile       String?
+  linkedinProfile     String?
+  
+  // Motivation
+  whyJoin            String?
+  howContribute      String?
+  
+  // Experience
+  previousExperience String?
+  leadershipExperience String?
+  
+  // Technical Tasks
+  selectedTask       String?
+  taskSubmission     String?
+  
+  // Availability
+  availability       String?
+  hoursPerWeek       String?
+  
+  // Additional Information
+  passionProject     String?
+  challengeProposal  String?
+  additionalInfo     String?
+  
+  // Application Status
+  status             String @default("draft") // draft, submitted, under_review, accepted, rejected
+  submittedAt        DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("recruitment_applications")
+}
