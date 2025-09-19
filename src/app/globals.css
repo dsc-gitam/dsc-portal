@@ -1,5 +1,55 @@
 @import "tailwindcss";
 
+:root {
+  --background: #ffffff;
+  --foreground: #1f2937;
+  
+  /* Google Design System Colors */
+  --primary: #4285F4;
+  --secondary: #EA4335;
+  --accent: #FBBC05;
+  --success: #34A853;
+  
+  /* Google Color Palette */
+  --google-blue: #4285F4;
+  --google-red: #EA4335;
+  --google-yellow: #FBBC05;
+  --google-green: #34A853;
+}
+
+/* Custom gradient solutions for buttons and elements */
+.btn-gradient-primary-secondary {
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+}
+
+.bg-gradient-primary-secondary-success {
+  background: linear-gradient(to right, var(--primary), var(--secondary), var(--success));
+}
+
+.bg-gradient-primary-blue {
+  background: linear-gradient(to bottom right, var(--primary), #2563eb);
+}
+
+.bg-gradient-secondary-red {
+  background: linear-gradient(to bottom right, var(--secondary), #dc2626);
+}
+
+.bg-gradient-success-green {
+  background: linear-gradient(to bottom right, var(--success), #16a34a);
+}
+
+.bg-gradient-primary-success {
+  background: linear-gradient(to right, var(--primary), var(--success));
+}
+
+.bg-gradient-text-primary-secondary {
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 /* Google Sans Font Faces */
 @font-face {
   font-family: 'Google Sans';
@@ -47,11 +97,6 @@
   font-weight: 700;
   src: url('/fonts/GoogleSansDisplay-Bold-v1.27.ttf') format('truetype');
   font-display: swap;
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #1f2937;
 }
 
 body {
