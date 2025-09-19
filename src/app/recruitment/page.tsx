@@ -359,7 +359,7 @@ export default function RecruitmentPage() {
                 type="button"
                 onClick={() => console.log('Submit application:', formData)}
                 disabled={progress < 80}
-                className="bg-gradient-primary-secondary text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-[var(--primary)] text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Submit Application
                 <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
