@@ -1,43 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import Header from "@/components/Header";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-4">
-              <Image
-                src="/gdgoc_logo.png"
-                alt="GDGoC Logo"
-                width={40}
-                height={40}
-                className="w-10 h-10 object-contain"
-              />
-              <Image
-                src="/GDG-Lockup-1Line-Black.png"
-                alt="Google Developer Groups on Campus"
-                width={200}
-                height={40}
-                className="h-8 w-auto object-contain"
-              />
-            </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm">
-                Home
-              </Link>
-              <Link href="/recruitment" className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm">
-                Recruitment
-              </Link>
-              <Link href="/auth/signin" className="bg-gray-900 text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-all shadow-sm hover:shadow-md font-medium text-sm">
-                Sign In
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <main>
