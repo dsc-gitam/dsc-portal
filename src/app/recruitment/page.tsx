@@ -60,6 +60,27 @@ export default function RecruitmentPage() {
     ['firstName', 'lastName', 'email', 'selectedRole', 'programmingLanguages', 'whyJoin', 'howContribute', 'passionProject', 'challengeProposal'], 
   []);
 
+  // Load saved form data on component mount
+  useEffect(() => {
+    const loadFormData = async () => {
+      if (!session?.user?.email) return;
+      
+      try {
+        const response = await fetch('/api/recruitment');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.application) {
+            setFormData(data.application);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading saved data:', error);
+      }
+    };
+
+    loadFormData();
+  }, [session]);
+
   useEffect(() => {
     const filledFields = requiredFields.filter(field => formData[field as keyof FormData]?.trim()).length;
     const newProgress = Math.round((filledFields / requiredFields.length) * 100);
@@ -367,6 +388,219 @@ export default function RecruitmentPage() {
               </div>
             </div>
 
+            {/* Department-Specific Tasks - Conditional Rendering */}
+            {formData.selectedRole && (
+              <div className="border-b border-gray-200 pb-8">
+                <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Department-Specific Tasks</h2>
+                
+                {/* Technical Role Tasks */}
+                {formData.selectedRole === "technical" && (
+                  <div className="space-y-6">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h3 className="font-medium text-blue-900 mb-2">Technical Challenge</h3>
+                      <p className="text-blue-800 text-sm">
+                        Choose one of the following tasks and share a link to a GitHub repository or a live demo of your work. 
+                        The goal is to see your thought process, not a perfect project.
+                      </p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <input 
+                          type="radio" 
+                          id="tech-task-1" 
+                          name="technicalTask" 
+                          value="events-webpage" 
+                          checked={formData.selectedTask === "events-webpage"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                          className="mt-1 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="tech-task-1" className="text-sm text-gray-700">
+                          Build a simple webpage that displays all upcoming GDG events. Events can be hardcoded.
+                        </label>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <input 
+                          type="radio" 
+                          id="tech-task-2" 
+                          name="technicalTask" 
+                          value="hello-world-app" 
+                          checked={formData.selectedTask === "hello-world-app"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                          className="mt-1 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="tech-task-2" className="text-sm text-gray-700">
+                          Create a basic "Hello World" app with a button that changes the text on the screen.
+                        </label>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <input 
+                          type="radio" 
+                          id="tech-task-3" 
+                          name="technicalTask" 
+                          value="api-script" 
+                          checked={formData.selectedTask === "api-script"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                          className="mt-1 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="tech-task-3" className="text-sm text-gray-700">
+                          Write a Python script that uses a public API to fetch data and performs a simple analysis.
+                        </label>
+                      </div>
+                    </div>
+                    {formData.selectedTask && (
+                      <div>
+                        <label htmlFor="taskSubmission" className="block text-sm font-medium text-gray-700 mb-2">
+                          GitHub Repository or Live Demo Link *
+                        </label>
+                        <input 
+                          type="url" 
+                          id="taskSubmission" 
+                          name="taskSubmission" 
+                          required 
+                          value={formData.taskSubmission || ""}
+                          onChange={(e) => saveFormData('taskSubmission', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                          placeholder="https://github.com/username/project or https://your-demo.com"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Marketing & Creative Role Tasks */}
+                {(formData.selectedRole === "marketing" || formData.selectedRole === "design") && (
+                  <div className="space-y-6">
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                      <h3 className="font-medium text-red-900 mb-2">Marketing & Creative Challenge</h3>
+                      <p className="text-red-800 text-sm">
+                        Choose one of the following tasks and share a link to your work.
+                      </p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <input 
+                          type="radio" 
+                          id="marketing-task-1" 
+                          name="marketingTask" 
+                          value="social-media-graphic" 
+                          checked={formData.selectedTask === "social-media-graphic"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                          className="mt-1 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="marketing-task-1" className="text-sm text-gray-700">
+                          Design a simple social media graphic to promote a "GDG Meet and Greet" event.
+                        </label>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <input 
+                          type="radio" 
+                          id="marketing-task-2" 
+                          name="marketingTask" 
+                          value="newsletter-draft" 
+                          checked={formData.selectedTask === "newsletter-draft"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                          className="mt-1 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="marketing-task-2" className="text-sm text-gray-700">
+                          Draft a sample email newsletter to the community announcing the new core team.
+                        </label>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <input 
+                          type="radio" 
+                          id="marketing-task-3" 
+                          name="marketingTask" 
+                          value="video-reel" 
+                          checked={formData.selectedTask === "video-reel"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                          className="mt-1 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="marketing-task-3" className="text-sm text-gray-700">
+                          Create a 15-second "reel" or short video using provided photos or public GDG footage.
+                        </label>
+                      </div>
+                    </div>
+                    {formData.selectedTask && (
+                      <div>
+                        <label htmlFor="taskSubmission" className="block text-sm font-medium text-gray-700 mb-2">
+                          Link to Your Work *
+                        </label>
+                        <input 
+                          type="url" 
+                          id="taskSubmission" 
+                          name="taskSubmission" 
+                          required 
+                          value={formData.taskSubmission || ""}
+                          onChange={(e) => saveFormData('taskSubmission', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                          placeholder="https://drive.google.com/... or https://your-work-link.com"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Operations & Partnerships Role Tasks */}
+                {(formData.selectedRole === "events" || formData.selectedRole === "content" || formData.selectedRole === "lead") && (
+                  <div className="space-y-6">
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <h3 className="font-medium text-green-900 mb-2">Operations & Partnerships Challenge</h3>
+                      <p className="text-green-800 text-sm">
+                        Choose one of the following tasks and submit your response below.
+                      </p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <input 
+                          type="radio" 
+                          id="ops-task-1" 
+                          name="operationsTask" 
+                          value="partnership-email" 
+                          checked={formData.selectedTask === "partnership-email"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                          className="mt-1 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="ops-task-1" className="text-sm text-gray-700">
+                          Draft a professional email to a local company proposing a partnership or sponsorship for a workshop.
+                        </label>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <input 
+                          type="radio" 
+                          id="ops-task-2" 
+                          name="operationsTask" 
+                          value="project-outline" 
+                          checked={formData.selectedTask === "project-outline"}
+                          onChange={(e) => saveFormData('selectedTask', e.target.value)}
+                          className="mt-1 text-primary focus:ring-primary"
+                        />
+                        <label htmlFor="ops-task-2" className="text-sm text-gray-700">
+                          Outline a project idea for the community. Describe the project's goal, the steps to complete it, and how it would benefit the members.
+                        </label>
+                      </div>
+                    </div>
+                    {formData.selectedTask && (
+                      <div>
+                        <label htmlFor="taskSubmission" className="block text-sm font-medium text-gray-700 mb-2">
+                          Your Response *
+                        </label>
+                        <textarea 
+                          id="taskSubmission" 
+                          name="taskSubmission" 
+                          required 
+                          rows={6} 
+                          value={formData.taskSubmission || ""}
+                          onChange={(e) => saveFormData('taskSubmission', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                          placeholder="Enter your detailed response here..."
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Technical Skills */}
             <div className="border-b border-gray-200 pb-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Technical Skills</h2>
@@ -523,46 +757,6 @@ export default function RecruitmentPage() {
                     onChange={(e) => saveFormData('challengeProposal', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
                     placeholder="Identify a potential challenge and propose your solution..."
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Technical Tasks */}
-            <div className="border-b border-gray-200 pb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 font-display">Technical Tasks</h2>
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="selectedTask" className="block text-sm font-medium text-gray-700 mb-2">
-                    Selected Task
-                  </label>
-                  <select
-                    id="selectedTask"
-                    name="selectedTask"
-                    value={formData.selectedTask || ""}
-                    onChange={(e) => saveFormData('selectedTask', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                  >
-                    <option value="">Select a task (if applicable)</option>
-                    <option value="web-dev">Web Development Project</option>
-                    <option value="mobile-app">Mobile App Development</option>
-                    <option value="data-analysis">Data Analysis Challenge</option>
-                    <option value="ui-design">UI/UX Design Task</option>
-                    <option value="content-creation">Content Creation Task</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="taskSubmission" className="block text-sm font-medium text-gray-700 mb-2">
-                    Task Submission
-                  </label>
-                  <textarea
-                    id="taskSubmission"
-                    name="taskSubmission"
-                    rows={4}
-                    value={formData.taskSubmission || ""}
-                    onChange={(e) => saveFormData('taskSubmission', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                    placeholder="Provide details about your task submission or approach..."
                   />
                 </div>
               </div>
