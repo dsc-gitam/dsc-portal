@@ -147,7 +147,7 @@ export default function RecruitmentPage() {
             </p>
             <button
               onClick={() => signIn('google')}
-              className="bg-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl"
+              className="bg-[var(--primary)] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl"
             >
               Sign In to Continue
             </button>
@@ -194,7 +194,7 @@ export default function RecruitmentPage() {
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
               <div 
-                className="bg-gradient-primary-secondary h-3 rounded-full transition-all duration-500"
+                className="bg-[var(--primary)] h-3 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
