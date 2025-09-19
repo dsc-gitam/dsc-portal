@@ -85,7 +85,7 @@ export default function RecruitmentPage() {
             </p>
             <button
               onClick={() => signIn('google')}
-              className="bg-[var(primary)] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl"
+              className="bg-[var(--primary)] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-all shadow-lg hover:shadow-xl"
             >
               Sign In to Continue
             </button>
@@ -120,13 +120,13 @@ export default function RecruitmentPage() {
               <h1 className="text-xl font-semibold text-gray-900 font-display">GDGoC GITAM Portal</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-primary transition-colors font-medium">
+              <Link href="/" className="text-gray-700 hover:text-[var(--primary)] transition-colors font-medium">
                 Home
               </Link>
-              <Link href="/recruitment" className="text-primary font-bold">
+              <Link href="/recruitment" className="text-[var(--primary)] font-bold">
                 Recruitment
               </Link>
-              <Link href="/auth/signin" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all shadow-sm hover:shadow-md font-medium">
+              <Link href="/auth/signin" className="bg-[var(--primary)] text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all shadow-sm hover:shadow-md font-medium">
                 Sign In
               </Link>
             </nav>
