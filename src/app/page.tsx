@@ -19,7 +19,7 @@ export default function HomePage() {
               <Link href="/recruitment" className="text-gray-700 hover:text-primary transition-colors font-medium">
                 Recruitment
               </Link>
-              <Link href="/auth/signin" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all shadow-sm hover:shadow-md font-medium">
+              <Link href="/auth/signin" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-sm hover:shadow-md font-medium">
                 Sign In
               </Link>
             </nav>
