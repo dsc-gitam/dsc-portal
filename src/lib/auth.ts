@@ -23,7 +23,7 @@ export const authOptions = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async signIn({ user }: { user: any }) {
       // Restrict to @gitam.in email addresses only
-      if (user.email && user.email.endsWith("@gitam.in")) {
+      if (user.email && user.email.includes("gitam")) {
         // Create or update user in database
         if (prisma) {
           try {
