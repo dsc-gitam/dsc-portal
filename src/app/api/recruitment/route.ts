@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { getPrismaClient, isDatabaseAvailable } from '@/lib/prisma';
+import { sendApplicationConfirmation } from '@/lib/email';
 import type { Session } from 'next-auth';
 
 export async function GET() {
@@ -145,6 +146,31 @@ export async function PUT(request: NextRequest) {
         updatedAt: new Date(),
       },
     });
+
+    // Send confirmation email after successful application submission
+    try {
+      const emailData = {
+        firstName: updatedApplication.firstName || '',
+        lastName: updatedApplication.lastName || '',
+        email: updatedApplication.email || user.email || '',
+        studentId: updatedApplication.studentId || '',
+        year: updatedApplication.yearOfStudy || '',
+        branch: updatedApplication.branch || '',
+        role: updatedApplication.selectedRole || '',
+      };
+
+      const emailResult = await sendApplicationConfirmation(emailData);
+      
+      if (!emailResult.success) {
+        console.error('Failed to send confirmation email:', emailResult.error);
+        // Don't fail the request if email fails, but log the error
+      } else {
+        console.log('Confirmation email sent successfully to:', emailData.email);
+      }
+    } catch (emailError) {
+      console.error('Error sending confirmation email:', emailError);
+      // Don't fail the request if email fails
+    }
 
     return NextResponse.json({ application: updatedApplication });
   } catch (error) {
