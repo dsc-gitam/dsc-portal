@@ -64,7 +64,7 @@ export default function RecruitmentPage() {
   useEffect(() => {
     const loadFormData = async () => {
       if (!session?.user?.email) return;
-      
+      saveFormData('email', session?.user?.email);
       try {
         const response = await fetch('/api/recruitment');
         if (response.ok) {
