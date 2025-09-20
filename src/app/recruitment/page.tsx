@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 
 interface FormData {
@@ -50,9 +51,11 @@ interface FormData {
 
 export default function RecruitmentPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({});
   const [progress, setProgress] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
@@ -112,6 +115,31 @@ export default function RecruitmentPage() {
       setError('Failed to save progress');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const submitApplication = async () => {
+    if (!session?.user?.email) return;
+    
+    try {
+      setIsSubmitting(true);
+      setError('');
+      
+      const response = await fetch('/api/recruitment', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error('Failed to submit application');
+      
+      // Redirect to confirmation page on successful submission
+      router.push('/confirmation');
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      setError('Failed to submit application. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -829,11 +857,11 @@ export default function RecruitmentPage() {
             <div className="flex justify-center pt-8">
               <button
                 type="button"
-                onClick={() => console.log('Submit application:', formData)}
-                disabled={progress < 80}
+                onClick={submitApplication}
+                disabled={progress < 80 || isSubmitting}
                 className="bg-[var(--primary)] text-white px-8 py-4 rounded-xl text-lg font-bold hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit Application
+                {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
