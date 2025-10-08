@@ -3,49 +3,57 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import AnnouncementBanner from "./AnnouncementBanner";
 
 export default function Header() {
   const { data: session, status } = useSession();
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          <div className="flex items-center space-x-4">
-{/*             <Image
-              src="/gdgoc_logo.png"
-              alt="GDGoC Logo"
-              width={40}
-              height={40}
-              className="w-10 h-10 object-contain"
-            /> */}
-            <Image
-              src="/GDG-Lockup-1Line-Black.png"
-              alt="Google Developer Groups on Campus"
-              width={200}
-              height={40}
-              className="h-8 w-auto object-contain"
-            />
-          </div>
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
-              className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
-            >
-              About
-            </Link>
-            <Link
-              href="/recruitment"
-              className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
-            >
-              Recruitment
-            </Link>
+    <>
+      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center space-x-4">
+  {/*             <Image
+                src="/gdgoc_logo.png"
+                alt="GDGoC Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain"
+              /> */}
+              <Image
+                src="/GDG-Lockup-1Line-Black.png"
+                alt="Google Developer Groups on Campus"
+                width={200}
+                height={40}
+                className="h-8 w-auto object-contain"
+              />
+            </div>
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link
+                href="/"
+                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
+              >
+                Home
+              </Link>
+              <Link
+                href="/about"
+                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
+              >
+                About
+              </Link>
+              <Link
+                href="/events"
+                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
+              >
+                Events
+              </Link>
+              <Link
+                href="/recruitment"
+                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
+              >
+                Recruitment
+              </Link>
             {status === "loading" ? (
               <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
             ) : session ? (
@@ -102,6 +110,8 @@ export default function Header() {
           </nav>
         </div>
       </div>
-    </header>
+      </header>
+      <AnnouncementBanner />
+    </>
   );
 }
