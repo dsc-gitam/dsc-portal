@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import AnnouncementBanner from "./AnnouncementBanner";
+import CountdownBanner from "./CountdownBanner";
 
 export default function Header() {
   const { data: session, status } = useSession();
@@ -222,6 +223,7 @@ export default function Header() {
       )}
 
       <AnnouncementBanner />
+      <CountdownBanner />
       </div>
     </>
   );

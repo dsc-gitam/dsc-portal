@@ -4,29 +4,47 @@ import Link from "next/link";
 
 export default function AnnouncementBanner() {
   return (
-    <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 text-white py-2 overflow-hidden relative flex items-center">
-      <div className="marquee-container flex-1">
+    <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 text-white py-2 overflow-hidden relative">
+      <div className="marquee-container">
         <div className="marquee-content">
           <span className="inline-block px-4">
             🎉 Cloud Study Jams have started! Registrations are open - Closing on 12th October EOD
           </span>
+          <Link
+            href="/cloud-study-jams"
+            className="inline-block bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mx-2"
+          >
+            Register Now
+          </Link>
+          <span className="inline-block px-4">
+            📝 Core Team Recruitment closing on 12th October 2025 at 5:00 PM
+          </span>
+          <Link
+            href="/recruitment"
+            className="inline-block bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mx-2"
+          >
+            Apply Now
+          </Link>
           <span className="inline-block px-4">
             🎉 Cloud Study Jams have started! Registrations are open - Closing on 12th October EOD
           </span>
+          <Link
+            href="/cloud-study-jams"
+            className="inline-block bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mx-2"
+          >
+            Register Now
+          </Link>
           <span className="inline-block px-4">
-            🎉 Cloud Study Jams have started! Registrations are open - Closing on 12th October EOD
+            📝 Core Team Recruitment closing on 12th October 2025 at 5:00 PM
           </span>
-          <span className="inline-block px-4">
-            🎉 Cloud Study Jams have started! Registrations are open - Closing on 12th October EOD
-          </span>
+          <Link
+            href="/recruitment"
+            className="inline-block bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mx-2"
+          >
+            Apply Now
+          </Link>
         </div>
       </div>
-      <Link
-        href="/cloud-study-jams"
-        className="bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mr-4 flex-shrink-0"
-      >
-        Register Now
-      </Link>
       <style jsx>{`
         .marquee-container {
           display: flex;
@@ -35,7 +53,7 @@ export default function AnnouncementBanner() {
         }
         .marquee-content {
           display: inline-block;
-          animation: marquee 20s linear infinite;
+          animation: marquee 30s linear infinite;
         }
         @keyframes marquee {
           0% {
