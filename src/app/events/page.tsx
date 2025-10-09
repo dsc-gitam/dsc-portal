@@ -122,16 +122,17 @@ export default function EventsPage() {
     const month = today.getMonth();
     
     return events.filter(event => event.endDate).map(event => {
-      const startDate = new Date(event.date);
-      const endDate = new Date(event.endDate!);
+      // Parse date strings manually to avoid timezone issues
+      const [startYear, startMonth, startDayStr] = event.date.split('-').map(Number);
+      const [, , endDayStr] = event.endDate!.split('-').map(Number);
       
       // Check if event is in current month
-      if (startDate.getMonth() !== month || startDate.getFullYear() !== year) {
+      if (startMonth - 1 !== month || startYear !== year) {
         return null;
       }
       
-      const startDay = startDate.getDate();
-      const endDay = endDate.getDate();
+      const startDay = startDayStr;
+      const endDay = endDayStr;
       
       // Calculate grid position (accounting for empty cells at start)
       const firstDayOfWeek = new Date(year, month, 1).getDay();
