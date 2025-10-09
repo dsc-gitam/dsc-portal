@@ -193,13 +193,13 @@ export default function EventsPage() {
                         className={`relative border transition-all ${
                           day
                             ? hasEvent
-                              ? 'border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100'
+                              ? 'border-gray-200 cursor-pointer hover:bg-gray-50'
                               : isToday
                               ? 'border-gray-900 bg-gray-50'
                               : 'border-gray-200 hover:bg-gray-50 cursor-pointer'
                             : 'border-transparent'
                         }`}
-                        style={{ aspectRatio: '1', minHeight: '80px', padding: '0.5rem' }}
+                        style={{ aspectRatio: '1', minHeight: '60px', padding: '0.5rem' }}
                         onClick={() => day && hasEvent && setSelectedDate(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
                       >
                         {day && (
@@ -226,7 +226,7 @@ export default function EventsPage() {
                     
                     // Calculate cell dimensions - assuming 7 columns and using percentages
                     const cellWidth = 100 / 7; // percentage
-                    const cellHeight = 80; // minHeight in pixels
+                    const cellHeight = 60; // minHeight in pixels
                     
                     if (startWeek === endWeek) {
                       // Single row event - use absolute positioning
