@@ -170,13 +170,13 @@ export default function EventsPage() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 font-display">{monthName}</h2>
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-3 sm:p-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 font-display">{monthName}</h2>
               
               <div>
                 <div className="grid grid-cols-7 mb-4">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="text-center font-semibold text-gray-600 text-sm py-2">
+                    <div key={day} className="text-center font-semibold text-gray-600 text-xs sm:text-sm py-1 sm:py-2">
                       {day}
                     </div>
                   ))}
@@ -199,11 +199,11 @@ export default function EventsPage() {
                               : 'border-gray-200 hover:bg-gray-50 cursor-pointer'
                             : 'border-transparent'
                         }`}
-                        style={{ aspectRatio: '1', minHeight: '60px', padding: '0.5rem' }}
+                        style={{ aspectRatio: '1', minHeight: '50px', padding: '0.25rem' }}
                         onClick={() => day && hasEvent && setSelectedDate(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
                       >
                         {day && (
-                          <div className={`text-sm font-medium ${isToday ? 'text-gray-900' : 'text-gray-700'}`}>
+                          <div className={`text-xs sm:text-sm font-medium ${isToday ? 'text-gray-900' : 'text-gray-700'}`}>
                             {day}
                           </div>
                         )}
@@ -226,7 +226,7 @@ export default function EventsPage() {
                     
                     // Calculate cell dimensions - assuming 7 columns and using percentages
                     const cellWidth = 100 / 7; // percentage
-                    const cellHeight = 60; // minHeight in pixels
+                    const cellHeight = 50; // minHeight in pixels
                     
                     if (startWeek === endWeek) {
                       // Single row event - use absolute positioning
@@ -236,7 +236,7 @@ export default function EventsPage() {
                       
                       const left = `${startCol * cellWidth}%`;
                       const width = `${spanCols * cellWidth}%`;
-                      const top = `${startWeek * cellHeight + cellHeight - 36}px`; // Position near bottom of cells
+                      const top = `${startWeek * cellHeight + cellHeight - 30}px`; // Position near bottom of cells
                       
                       return (
                         <div
@@ -268,7 +268,7 @@ export default function EventsPage() {
                         
                         const left = `${startCol * cellWidth}%`;
                         const width = `${spanCols * cellWidth}%`;
-                        const top = `${week * cellHeight + cellHeight - 36}px`;
+                        const top = `${week * cellHeight + cellHeight - 30}px`;
                         
                         bars.push(
                           <div
