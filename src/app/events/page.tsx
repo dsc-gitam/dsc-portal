@@ -8,11 +8,22 @@ interface Event {
   id: string;
   title: string;
   date: string;
+  endDate?: string;
   time: string;
   location: string;
   description: string;
   category: string;
   color: string;
+}
+
+interface MultiDayEvent extends Event {
+  startDay: number;
+  endDay: number;
+  startCol: number;
+  endCol: number;
+  startRow: number;
+  endRow: number;
+  span: number;
 }
 
 export default function EventsPage() {
@@ -22,32 +33,13 @@ export default function EventsPage() {
     {
       id: "1",
       title: "Cloud Study Jams",
-      date: "2025-10-12",
+      date: "2025-10-07",
+      endDate: "2025-10-12",
       time: "10:00 AM - 5:00 PM",
       location: "Online",
       description: "Join us for Google Cloud Study Jams! Learn cloud computing through hands-on labs and structured learning paths.",
       category: "Workshop",
       color: "bg-blue-500"
-    },
-    {
-      id: "2",
-      title: "Web Development Workshop",
-      date: "2025-02-20",
-      time: "2:00 PM - 4:00 PM",
-      location: "Computer Lab 1",
-      description: "Learn modern web development with React and Next.js",
-      category: "Workshop",
-      color: "bg-green-500"
-    },
-    {
-      id: "3",
-      title: "Tech Talk: AI & ML",
-      date: "2025-02-25",
-      time: "3:00 PM - 5:00 PM",
-      location: "Auditorium",
-      description: "Industry experts discuss the latest trends in AI and Machine Learning",
-      category: "Tech Talk",
-      color: "bg-purple-500"
     }
   ];
 
@@ -76,7 +68,13 @@ export default function EventsPage() {
     const year = today.getFullYear();
     const month = today.getMonth();
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return events.some(event => event.date === dateStr);
+    return events.some(event => {
+      if (event.endDate) {
+        // Check if date is within range
+        return dateStr >= event.date && dateStr <= event.endDate;
+      }
+      return event.date === dateStr;
+    });
   };
 
   const getEventsForDate = (day: number | null) => {
@@ -85,22 +83,80 @@ export default function EventsPage() {
     const year = today.getFullYear();
     const month = today.getMonth();
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return events.filter(event => event.date === dateStr);
+    return events.filter(event => {
+      if (event.endDate) {
+        // Check if date is within range
+        return dateStr >= event.date && dateStr <= event.endDate;
+      }
+      return event.date === dateStr;
+    });
   };
 
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr: string, endDateStr?: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { 
+    const formatted = date.toLocaleDateString('en-US', { 
       weekday: 'long', 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
+    
+    if (endDateStr) {
+      const endDate = new Date(endDateStr);
+      const endFormatted = endDate.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      return `${formatted} - ${endFormatted}`;
+    }
+    
+    return formatted;
+  };
+
+  // Get multi-day events with their grid positions
+  const getMultiDayEvents = (): (MultiDayEvent | null)[] => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    
+    return events.filter(event => event.endDate).map(event => {
+      const startDate = new Date(event.date);
+      const endDate = new Date(event.endDate!);
+      
+      // Check if event is in current month
+      if (startDate.getMonth() !== month || startDate.getFullYear() !== year) {
+        return null;
+      }
+      
+      const startDay = startDate.getDate();
+      const endDay = endDate.getDate();
+      
+      // Calculate grid position (accounting for empty cells at start)
+      const firstDayOfWeek = new Date(year, month, 1).getDay();
+      const startCol = (startDay - 1 + firstDayOfWeek) % 7 + 1;
+      const endCol = (endDay - 1 + firstDayOfWeek) % 7 + 1;
+      const startRow = Math.floor((startDay - 1 + firstDayOfWeek) / 7) + 1;
+      const endRow = Math.floor((endDay - 1 + firstDayOfWeek) / 7) + 1;
+      
+      return {
+        ...event,
+        startDay,
+        endDay,
+        startCol,
+        endCol,
+        startRow,
+        endRow,
+        span: endDay - startDay + 1
+      } as MultiDayEvent;
+    }).filter(Boolean);
   };
 
   const calendarDays = getCalendarDays();
   const today = new Date();
   const monthName = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const multiDayEvents = getMultiDayEvents();
 
   return (
     <div className="min-h-screen bg-white">
@@ -117,59 +173,112 @@ export default function EventsPage() {
             <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 font-display">{monthName}</h2>
               
-              <div className="grid grid-cols-7 gap-2 mb-4">
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                  <div key={day} className="text-center font-semibold text-gray-600 text-sm py-2">
-                    {day}
-                  </div>
-                ))}
-                {calendarDays.map((day, index) => {
-                  const hasEvent = hasEventOnDate(day);
-                  const eventsOnDay = getEventsForDate(day);
-                  const isToday = day === today.getDate();
-                  
-                  return (
-                    <div
-                      key={index}
-                      className={`relative aspect-square border rounded-lg p-2 transition-all ${
-                        day
-                          ? hasEvent
-                            ? 'border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100'
-                            : isToday
-                            ? 'border-gray-900 bg-gray-50'
-                            : 'border-gray-200 hover:bg-gray-50 cursor-pointer'
-                          : 'border-transparent'
-                      }`}
-                      onClick={() => day && hasEvent && setSelectedDate(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
-                    >
-                      {day && (
-                        <>
+              <div>
+                <div className="grid grid-cols-7 gap-2 mb-4">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className="text-center font-semibold text-gray-600 text-sm py-2">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', position: 'relative' }}>
+                  {calendarDays.map((day, index) => {
+                    const hasEvent = hasEventOnDate(day);
+                    const eventsOnDay = getEventsForDate(day);
+                    const isToday = day === today.getDate();
+                    
+                    return (
+                      <div
+                        key={index}
+                        className={`relative border rounded-lg p-2 transition-all ${
+                          day
+                            ? hasEvent
+                              ? 'border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100'
+                              : isToday
+                              ? 'border-gray-900 bg-gray-50'
+                              : 'border-gray-200 hover:bg-gray-50 cursor-pointer'
+                            : 'border-transparent'
+                        }`}
+                        style={{ aspectRatio: '1', minHeight: '80px' }}
+                        onClick={() => day && hasEvent && setSelectedDate(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
+                      >
+                        {day && (
                           <div className={`text-sm font-medium ${isToday ? 'text-gray-900' : 'text-gray-700'}`}>
                             {day}
                           </div>
-                          {hasEvent && (
-                            <div className="absolute bottom-1 left-1 right-1">
-                              {eventsOnDay.slice(0, 2).map((event) => (
-                                <div
-                                  key={event.id}
-                                  className={`text-xs ${event.color} text-white rounded px-1 py-0.5 mb-0.5 truncate`}
-                                  title={event.title}
-                                >
-                                  {event.title}
-                                </div>
-                              ))}
-                              {eventsOnDay.length > 2 && (
-                                <div className="text-xs text-gray-600 font-medium">
-                                  +{eventsOnDay.length - 2} more
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  );
-                })}
+                        )}
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Render multi-day events as spanning bars using grid positioning */}
+                  {multiDayEvents.map((event) => {
+                    if (!event) return null;
+                    
+                    // Calculate positioning
+                    const firstDayOfWeek = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+                    const startIndex = event.startDay - 1 + firstDayOfWeek;
+                    const endIndex = event.endDay - 1 + firstDayOfWeek;
+                    
+                    // Check if event spans multiple weeks
+                    const startWeek = Math.floor(startIndex / 7);
+                    const endWeek = Math.floor(endIndex / 7);
+                    
+                    if (startWeek === endWeek) {
+                      // Single row event - use grid positioning
+                      const startCol = (startIndex % 7) + 1;
+                      const endCol = (endIndex % 7) + 2; // +2 because grid-column-end is exclusive
+                      const row = startWeek + 1;
+                      
+                      return (
+                        <div
+                          key={event.id}
+                          className={`${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity z-10 flex items-center`}
+                          style={{
+                            gridColumn: `${startCol} / ${endCol}`,
+                            gridRow: row,
+                            height: '28px',
+                            alignSelf: 'end',
+                            marginBottom: '8px'
+                          }}
+                          onClick={() => setSelectedDate(event.date)}
+                        >
+                          <span className="truncate block">{event.title}</span>
+                        </div>
+                      );
+                    } else {
+                      // Multi-row event - render as separate bars for each week
+                      const bars = [];
+                      for (let week = startWeek; week <= endWeek; week++) {
+                        const weekStartIndex = week === startWeek ? startIndex : week * 7;
+                        const weekEndIndex = week === endWeek ? endIndex : (week + 1) * 7 - 1;
+                        
+                        const startCol = (weekStartIndex % 7) + 1;
+                        const endCol = (weekEndIndex % 7) + 2;
+                        const row = week + 1;
+                        
+                        bars.push(
+                          <div
+                            key={`${event.id}-week-${week}`}
+                            className={`${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity z-10 flex items-center`}
+                            style={{
+                              gridColumn: `${startCol} / ${endCol}`,
+                              gridRow: row,
+                              height: '28px',
+                              alignSelf: 'end',
+                              marginBottom: '8px'
+                            }}
+                            onClick={() => setSelectedDate(event.date)}
+                          >
+                            <span className="truncate block">{event.title}</span>
+                          </div>
+                        );
+                      }
+                      return bars;
+                    }
+                  })}
+                </div>
               </div>
 
               {selectedDate && (
@@ -218,7 +327,7 @@ export default function EventsPage() {
                 <div className="space-y-1 text-sm text-gray-600 mb-3">
                   <div className="flex items-center">
                     <span className="mr-2">📅</span>
-                    {formatDate(event.date)}
+                    {formatDate(event.date, event.endDate)}
                   </div>
                   <div className="flex items-center">
                     <span className="mr-2">🕒</span>
