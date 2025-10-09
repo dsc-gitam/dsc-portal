@@ -10,7 +10,8 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+      <div className="sticky top-0 z-50">
+      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-4">
@@ -112,6 +113,7 @@ export default function Header() {
       </div>
       </header>
       <AnnouncementBanner />
+      </div>
     </>
   );
 }

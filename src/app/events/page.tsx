@@ -8,6 +8,7 @@ interface Event {
   id: string;
   title: string;
   date: string;
+  endDate?: string;
   time: string;
   location: string;
   description: string;
@@ -22,32 +23,13 @@ export default function EventsPage() {
     {
       id: "1",
       title: "Cloud Study Jams",
-      date: "2025-10-12",
+      date: "2025-10-07",
+      endDate: "2025-10-12",
       time: "10:00 AM - 5:00 PM",
       location: "Online",
       description: "Join us for Google Cloud Study Jams! Learn cloud computing through hands-on labs and structured learning paths.",
       category: "Workshop",
       color: "bg-blue-500"
-    },
-    {
-      id: "2",
-      title: "Web Development Workshop",
-      date: "2025-02-20",
-      time: "2:00 PM - 4:00 PM",
-      location: "Computer Lab 1",
-      description: "Learn modern web development with React and Next.js",
-      category: "Workshop",
-      color: "bg-green-500"
-    },
-    {
-      id: "3",
-      title: "Tech Talk: AI & ML",
-      date: "2025-02-25",
-      time: "3:00 PM - 5:00 PM",
-      location: "Auditorium",
-      description: "Industry experts discuss the latest trends in AI and Machine Learning",
-      category: "Tech Talk",
-      color: "bg-purple-500"
     }
   ];
 
@@ -76,7 +58,13 @@ export default function EventsPage() {
     const year = today.getFullYear();
     const month = today.getMonth();
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return events.some(event => event.date === dateStr);
+    return events.some(event => {
+      if (event.endDate) {
+        // Check if date is within range
+        return dateStr >= event.date && dateStr <= event.endDate;
+      }
+      return event.date === dateStr;
+    });
   };
 
   const getEventsForDate = (day: number | null) => {
@@ -85,17 +73,36 @@ export default function EventsPage() {
     const year = today.getFullYear();
     const month = today.getMonth();
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return events.filter(event => event.date === dateStr);
+    return events.filter(event => {
+      if (event.endDate) {
+        // Check if date is within range
+        return dateStr >= event.date && dateStr <= event.endDate;
+      }
+      return event.date === dateStr;
+    });
   };
 
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr: string, endDateStr?: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { 
+    const formatted = date.toLocaleDateString('en-US', { 
       weekday: 'long', 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
+    
+    if (endDateStr) {
+      const endDate = new Date(endDateStr);
+      const endFormatted = endDate.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      return `${formatted} - ${endFormatted}`;
+    }
+    
+    return formatted;
   };
 
   const calendarDays = getCalendarDays();
@@ -218,7 +225,7 @@ export default function EventsPage() {
                 <div className="space-y-1 text-sm text-gray-600 mb-3">
                   <div className="flex items-center">
                     <span className="mr-2">📅</span>
-                    {formatDate(event.date)}
+                    {formatDate(event.date, event.endDate)}
                   </div>
                   <div className="flex items-center">
                     <span className="mr-2">🕒</span>
