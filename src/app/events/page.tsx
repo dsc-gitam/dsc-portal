@@ -122,16 +122,17 @@ export default function EventsPage() {
     const month = today.getMonth();
     
     return events.filter(event => event.endDate).map(event => {
-      const startDate = new Date(event.date);
-      const endDate = new Date(event.endDate!);
+      // Parse date strings manually to avoid timezone issues
+      const [startYear, startMonth, startDayStr] = event.date.split('-').map(Number);
+      const [, , endDayStr] = event.endDate!.split('-').map(Number);
       
       // Check if event is in current month
-      if (startDate.getMonth() !== month || startDate.getFullYear() !== year) {
+      if (startMonth - 1 !== month || startYear !== year) {
         return null;
       }
       
-      const startDay = startDate.getDate();
-      const endDay = endDate.getDate();
+      const startDay = startDayStr;
+      const endDay = endDayStr;
       
       // Calculate grid position (accounting for empty cells at start)
       const firstDayOfWeek = new Date(year, month, 1).getDay();
@@ -170,13 +171,13 @@ export default function EventsPage() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 font-display">{monthName}</h2>
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-3 sm:p-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 font-display">{monthName}</h2>
               
               <div>
                 <div className="grid grid-cols-7 mb-4">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="text-center font-semibold text-gray-600 text-sm py-2">
+                    <div key={day} className="text-center font-semibold text-gray-600 text-xs sm:text-sm py-1 sm:py-2">
                       {day}
                     </div>
                   ))}
@@ -193,17 +194,17 @@ export default function EventsPage() {
                         className={`relative border transition-all ${
                           day
                             ? hasEvent
-                              ? 'border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100'
+                              ? 'border-gray-200 cursor-pointer hover:bg-gray-50'
                               : isToday
                               ? 'border-gray-900 bg-gray-50'
                               : 'border-gray-200 hover:bg-gray-50 cursor-pointer'
                             : 'border-transparent'
                         }`}
-                        style={{ aspectRatio: '1', minHeight: '80px', padding: '0.5rem' }}
+                        style={{ aspectRatio: '1', minHeight: '50px', padding: '0.25rem' }}
                         onClick={() => day && hasEvent && setSelectedDate(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
                       >
                         {day && (
-                          <div className={`text-sm font-medium ${isToday ? 'text-gray-900' : 'text-gray-700'}`}>
+                          <div className={`text-xs sm:text-sm font-medium ${isToday ? 'text-gray-900' : 'text-gray-700'}`}>
                             {day}
                           </div>
                         )}
@@ -226,7 +227,7 @@ export default function EventsPage() {
                     
                     // Calculate cell dimensions - assuming 7 columns and using percentages
                     const cellWidth = 100 / 7; // percentage
-                    const cellHeight = 80; // minHeight in pixels
+                    const cellHeight = 50; // minHeight in pixels
                     
                     if (startWeek === endWeek) {
                       // Single row event - use absolute positioning
@@ -236,7 +237,7 @@ export default function EventsPage() {
                       
                       const left = `${startCol * cellWidth}%`;
                       const width = `${spanCols * cellWidth}%`;
-                      const top = `${startWeek * cellHeight + cellHeight - 36}px`; // Position near bottom of cells
+                      const top = `${startWeek * cellHeight + cellHeight - 30}px`; // Position near bottom of cells
                       
                       return (
                         <div
@@ -268,7 +269,7 @@ export default function EventsPage() {
                         
                         const left = `${startCol * cellWidth}%`;
                         const width = `${spanCols * cellWidth}%`;
-                        const top = `${week * cellHeight + cellHeight - 36}px`;
+                        const top = `${week * cellHeight + cellHeight - 30}px`;
                         
                         bars.push(
                           <div
