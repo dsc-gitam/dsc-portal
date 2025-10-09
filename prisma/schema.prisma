@@ -17,6 +17,7 @@ model User {
   image String?
   
   applications RecruitmentApplication[]
+  cloudStudyJamsRegistrations CloudStudyJamsRegistration[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -78,4 +79,34 @@ model RecruitmentApplication {
   updatedAt DateTime @updatedAt
   
   @@map("recruitment_applications")
+}
+
+model CloudStudyJamsRegistration {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Registration Information
+  email                   String?
+  fullName                String?
+  gender                  String?
+  graduationYear          String?
+  hasLaptop               String?
+  newAccountVerified      String?
+  skillsBoostEmail        String?
+  profileUrl              String?
+  
+  // Acknowledgements
+  termsAccepted           String?
+  dataAcknowledgement     String?
+  completionAgreement     String?
+  
+  // Application Status
+  status                  String @default("draft") // draft, submitted
+  submittedAt             DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("cloud_study_jams_registrations")
 }

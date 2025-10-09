@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 
 export default function CloudStudyJamsRegisterPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  
   const [formData, setFormData] = useState({
     email: "",
     termsAccepted: "",
@@ -20,20 +25,104 @@ export default function CloudStudyJamsRegisterPage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [error, setError] = useState("");
+  const [registrationStatus, setRegistrationStatus] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch existing registration data
+  useEffect(() => {
+    const fetchRegistration = async () => {
+      try {
+        const response = await fetch('/api/cloud-study-jams');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.registration) {
+            setFormData({
+              email: data.registration.email || session?.user?.email || "",
+              fullName: data.registration.fullName || "",
+              gender: data.registration.gender || "",
+              graduationYear: data.registration.graduationYear || "",
+              hasLaptop: data.registration.hasLaptop || "",
+              newAccountVerified: data.registration.newAccountVerified || "",
+              skillsBoostEmail: data.registration.skillsBoostEmail || "",
+              profileUrl: data.registration.profileUrl || "",
+              termsAccepted: data.registration.termsAccepted || "",
+              dataAcknowledgement: data.registration.dataAcknowledgement || "",
+              completionAgreement: data.registration.completionAgreement || "",
+            });
+            setRegistrationStatus(data.registration.status);
+            setLastSaved(data.registration.updatedAt ? new Date(data.registration.updatedAt) : null);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching registration:', error);
+      }
+    };
+
+    if (session?.user?.email) {
+      fetchRegistration();
+    }
+  }, [session]);
+
+  const saveAsDraft = async () => {
+    if (!session?.user?.email) return;
+    
+    try {
+      setIsSaving(true);
+      setError('');
+      
+      const response = await fetch('/api/cloud-study-jams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, status: 'draft' }),
+      });
+
+      if (!response.ok) throw new Error('Failed to save');
+      
+      setLastSaved(new Date());
+      setRegistrationStatus('draft');
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      setError('Failed to save progress');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.termsAccepted !== "accept") {
       alert("You must accept the terms and conditions to proceed.");
       return;
     }
+    
+    if (!session?.user?.email) {
+      alert("You must be signed in to submit the registration.");
+      return;
+    }
+    
     setIsSubmitting(true);
-    // Handle form submission
-    console.log("Form submitted:", formData);
-    setTimeout(() => {
+    setError('');
+    
+    try {
+      const response = await fetch('/api/cloud-study-jams', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error('Failed to submit registration');
+      
       alert("Registration submitted successfully!");
+      setRegistrationStatus('submitted');
+      router.push('/cloud-study-jams');
+    } catch (error) {
+      console.error('Error submitting registration:', error);
+      setError('Failed to submit registration. Please try again.');
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -41,6 +130,73 @@ export default function CloudStudyJamsRegisterPage() {
       <Header />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Authentication Check */}
+        {status === "loading" && (
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 mb-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+              <p className="text-lg text-gray-600">Loading...</p>
+            </div>
+          </div>
+        )}
+
+        {status === "unauthenticated" && (
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 mb-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Authentication Required</h3>
+              <p className="text-gray-600 mb-4">You must be signed in to register for Cloud Study Jams.</p>
+              <Link
+                href="/auth/signin"
+                className="inline-block bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-blue-700 transition-all duration-300"
+              >
+                Sign In
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {status === "authenticated" && registrationStatus === "submitted" && (
+          <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 mb-8">
+            <h3 className="font-bold text-green-900 mb-2">✓ Registration Already Submitted</h3>
+            <p className="text-sm text-green-800">
+              You have already submitted your registration for Cloud Study Jams. Your registration is being processed.
+            </p>
+            <Link
+              href="/cloud-study-jams"
+              className="inline-block mt-4 text-green-700 font-semibold hover:text-green-900"
+            >
+              ← Back to Cloud Study Jams
+            </Link>
+          </div>
+        )}
+
+        {status === "authenticated" && registrationStatus !== "submitted" && (
+          <>
+            {/* Save Status */}
+            {lastSaved && (
+              <div className="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4 mb-6">
+                <p className="text-sm text-blue-800">
+                  <strong>Draft saved</strong> - Last saved: {lastSaved.toLocaleString()}
+                </p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
+                <p className="text-sm text-red-800">{error}</p>
+              </div>
+            )}
         {/* Header */}
         <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8 mb-8">
           <div className="text-center mb-6">
@@ -478,16 +634,29 @@ export default function CloudStudyJamsRegisterPage() {
 
           {/* Submit Button */}
           <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-8">
-            <div className="text-center">
-              <button
-                type="submit"
-                disabled={isSubmitting || formData.termsAccepted !== "accept"}
-                className="bg-blue-600 text-white px-12 py-4 rounded-full text-lg font-bold hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
-              >
-                {isSubmitting ? "Submitting..." : "Submit Registration"}
-              </button>
+            <div className="text-center space-y-4">
+              <div className="flex justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={saveAsDraft}
+                  disabled={isSaving || isSubmitting}
+                  className="bg-gray-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+                >
+                  {isSaving ? "Saving..." : "Save as Draft"}
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || isSaving || formData.termsAccepted !== "accept"}
+                  className="bg-blue-600 text-white px-12 py-4 rounded-full text-lg font-bold hover:bg-blue-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+                >
+                  {isSubmitting ? "Submitting..." : "Submit Registration"}
+                </button>
+              </div>
               <p className="mt-4 text-sm text-gray-600">
                 By clicking submit, you acknowledge that you have read and understood all the information provided.
+              </p>
+              <p className="text-xs text-gray-500">
+                Save as Draft to save your progress without submitting. You can come back later to complete and submit your registration.
               </p>
             </div>
           </div>
@@ -504,6 +673,8 @@ export default function CloudStudyJamsRegisterPage() {
             </p>
           </div>
         </form>
+        </>
+        )}
       </main>
 
       {/* Footer */}
