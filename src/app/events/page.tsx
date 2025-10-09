@@ -174,7 +174,7 @@ export default function EventsPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-6 font-display">{monthName}</h2>
               
               <div>
-                <div className="grid grid-cols-7 gap-2 mb-4">
+                <div className="grid grid-cols-7 mb-4">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                     <div key={day} className="text-center font-semibold text-gray-600 text-sm py-2">
                       {day}
@@ -182,16 +182,15 @@ export default function EventsPage() {
                   ))}
                 </div>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', position: 'relative' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', position: 'relative' }}>
                   {calendarDays.map((day, index) => {
                     const hasEvent = hasEventOnDate(day);
-                    const eventsOnDay = getEventsForDate(day);
                     const isToday = day === today.getDate();
                     
                     return (
                       <div
                         key={index}
-                        className={`relative border rounded-lg p-2 transition-all ${
+                        className={`relative border transition-all ${
                           day
                             ? hasEvent
                               ? 'border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100'
@@ -200,7 +199,7 @@ export default function EventsPage() {
                               : 'border-gray-200 hover:bg-gray-50 cursor-pointer'
                             : 'border-transparent'
                         }`}
-                        style={{ aspectRatio: '1', minHeight: '80px' }}
+                        style={{ aspectRatio: '1', minHeight: '80px', padding: '0.5rem' }}
                         onClick={() => day && hasEvent && setSelectedDate(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
                       >
                         {day && (
@@ -212,7 +211,7 @@ export default function EventsPage() {
                     );
                   })}
                   
-                  {/* Render multi-day events as spanning bars using grid positioning */}
+                  {/* Render multi-day events as spanning bars using absolute positioning */}
                   {multiDayEvents.map((event) => {
                     if (!event) return null;
                     
@@ -225,22 +224,31 @@ export default function EventsPage() {
                     const startWeek = Math.floor(startIndex / 7);
                     const endWeek = Math.floor(endIndex / 7);
                     
+                    // Calculate cell dimensions - assuming 7 columns and using percentages
+                    const cellWidth = 100 / 7; // percentage
+                    const cellHeight = 80; // minHeight in pixels
+                    
                     if (startWeek === endWeek) {
-                      // Single row event - use grid positioning
-                      const startCol = (startIndex % 7) + 1;
-                      const endCol = (endIndex % 7) + 2; // +2 because grid-column-end is exclusive
-                      const row = startWeek + 1;
+                      // Single row event - use absolute positioning
+                      const startCol = startIndex % 7;
+                      const endCol = endIndex % 7;
+                      const spanCols = endCol - startCol + 1;
+                      
+                      const left = `${startCol * cellWidth}%`;
+                      const width = `${spanCols * cellWidth}%`;
+                      const top = `${startWeek * cellHeight + cellHeight - 36}px`; // Position near bottom of cells
                       
                       return (
                         <div
                           key={event.id}
-                          className={`${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity z-10 flex items-center`}
+                          className={`${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity flex items-center`}
                           style={{
-                            gridColumn: `${startCol} / ${endCol}`,
-                            gridRow: row,
+                            position: 'absolute',
+                            left,
+                            width,
+                            top,
                             height: '28px',
-                            alignSelf: 'end',
-                            marginBottom: '8px'
+                            zIndex: 10
                           }}
                           onClick={() => setSelectedDate(event.date)}
                         >
@@ -254,20 +262,25 @@ export default function EventsPage() {
                         const weekStartIndex = week === startWeek ? startIndex : week * 7;
                         const weekEndIndex = week === endWeek ? endIndex : (week + 1) * 7 - 1;
                         
-                        const startCol = (weekStartIndex % 7) + 1;
-                        const endCol = (weekEndIndex % 7) + 2;
-                        const row = week + 1;
+                        const startCol = weekStartIndex % 7;
+                        const endCol = weekEndIndex % 7;
+                        const spanCols = endCol - startCol + 1;
+                        
+                        const left = `${startCol * cellWidth}%`;
+                        const width = `${spanCols * cellWidth}%`;
+                        const top = `${week * cellHeight + cellHeight - 36}px`;
                         
                         bars.push(
                           <div
                             key={`${event.id}-week-${week}`}
-                            className={`${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity z-10 flex items-center`}
+                            className={`${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity flex items-center`}
                             style={{
-                              gridColumn: `${startCol} / ${endCol}`,
-                              gridRow: row,
+                              position: 'absolute',
+                              left,
+                              width,
+                              top,
                               height: '28px',
-                              alignSelf: 'end',
-                              marginBottom: '8px'
+                              zIndex: 10
                             }}
                             onClick={() => setSelectedDate(event.date)}
                           >

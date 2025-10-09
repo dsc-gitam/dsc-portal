@@ -3,10 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
+import { useState } from "react";
 import AnnouncementBanner from "./AnnouncementBanner";
 
 export default function Header() {
   const { data: session, status } = useSession();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <>
@@ -109,9 +111,116 @@ export default function Header() {
               </Link>
             )}
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isMobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
       </header>
+
+      {/* Mobile Navigation Drawer */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
+          <div 
+            className="absolute right-0 top-0 h-full w-64 bg-white shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6">
+              <div className="flex justify-end mb-8">
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <nav className="space-y-4">
+                <Link
+                  href="/"
+                  className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/about"
+                  className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
+                <Link
+                  href="/events"
+                  className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Events
+                </Link>
+                <Link
+                  href="/recruitment"
+                  className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Recruitment
+                </Link>
+
+                <div className="pt-4 border-t border-gray-200">
+                  {status === "loading" ? (
+                    <div className="h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+                  ) : session ? (
+                    <div className="space-y-2">
+                      <div className="px-4 py-2 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
+                        <p className="text-xs text-gray-500">{session.user?.email}</p>
+                      </div>
+                      <Link
+                        href="/recruitment"
+                        className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        My Application
+                      </Link>
+                      <button
+                        onClick={() => {
+                          signOut();
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="block w-full text-left text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  ) : (
+                    <Link
+                      href="/auth/signin"
+                      className="block bg-gray-900 text-white text-center px-6 py-3 rounded-full hover:bg-gray-800 transition-all font-medium"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                  )}
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
+
       <AnnouncementBanner />
       </div>
     </>

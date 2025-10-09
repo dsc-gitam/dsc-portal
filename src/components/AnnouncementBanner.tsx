@@ -22,7 +22,7 @@ export default function AnnouncementBanner() {
         </div>
       </div>
       <Link
-        href="/cloud-study-jams/register"
+        href="/cloud-study-jams"
         className="bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mr-4 flex-shrink-0"
       >
         Register Now
