@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -29,6 +29,7 @@ export default function CloudStudyJamsRegisterPage() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [error, setError] = useState("");
   const [registrationStatus, setRegistrationStatus] = useState<string | null>(null);
+  const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Fetch existing registration data
   useEffect(() => {
@@ -65,7 +66,11 @@ export default function CloudStudyJamsRegisterPage() {
     }
   }, [session]);
 
-  const saveAsDraft = async () => {
+  const saveFormData = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const saveAsDraft = useCallback(async () => {
     if (!session?.user?.email) return;
     
     try {
@@ -88,7 +93,31 @@ export default function CloudStudyJamsRegisterPage() {
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [session?.user?.email, formData]);
+
+  // Auto-save when form data changes (with debouncing)
+  useEffect(() => {
+    if (session?.user?.email && registrationStatus !== 'submitted') {
+      // Clear existing timer
+      if (autoSaveTimer) {
+        clearTimeout(autoSaveTimer);
+      }
+      
+      // Set new timer to auto-save after 3 seconds of inactivity
+      const timer = setTimeout(() => {
+        if (formData.email || formData.fullName) {
+          saveAsDraft();
+        }
+      }, 3000);
+      
+      setAutoSaveTimer(timer);
+      
+      // Cleanup timer on unmount
+      return () => {
+        if (timer) clearTimeout(timer);
+      };
+    }
+  }, [formData, session, registrationStatus, autoSaveTimer, saveAsDraft]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,10 +212,23 @@ export default function CloudStudyJamsRegisterPage() {
         {status === "authenticated" && registrationStatus !== "submitted" && (
           <>
             {/* Save Status */}
-            {lastSaved && (
+            {isSaving && (
+              <div className="bg-gray-50 border-l-4 border-gray-400 rounded-lg p-4 mb-6">
+                <p className="text-sm text-gray-800 flex items-center">
+                  <svg className="animate-spin h-4 w-4 mr-2 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Saving...
+                </p>
+              </div>
+            )}
+            {lastSaved && !isSaving && (
               <div className="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4 mb-6">
                 <p className="text-sm text-blue-800">
-                  <strong>Draft saved</strong> - Last saved: {lastSaved.toLocaleString()}
+                  <strong>✓ Draft saved</strong> - Last saved: {lastSaved.toLocaleString()}
+                  <br />
+                  <span className="text-xs">Your progress is automatically saved as you type.</span>
                 </p>
               </div>
             )}
@@ -269,7 +311,7 @@ export default function CloudStudyJamsRegisterPage() {
                 id="email"
                 required
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) => saveFormData('email', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="your.email@example.com"
               />
@@ -331,7 +373,7 @@ export default function CloudStudyJamsRegisterPage() {
                     name="terms"
                     value="accept"
                     checked={formData.termsAccepted === "accept"}
-                    onChange={(e) => setFormData({ ...formData, termsAccepted: e.target.value })}
+                    onChange={(e) => saveFormData('termsAccepted', e.target.value)}
                     className="mr-3"
                     required
                   />
@@ -343,7 +385,7 @@ export default function CloudStudyJamsRegisterPage() {
                     name="terms"
                     value="decline"
                     checked={formData.termsAccepted === "decline"}
-                    onChange={(e) => setFormData({ ...formData, termsAccepted: e.target.value })}
+                    onChange={(e) => saveFormData('termsAccepted', e.target.value)}
                     className="mr-3"
                   />
                   <span className="text-sm text-gray-900">I decline (By declining, you will not receive Google Cloud Skills Boost Access Code for the program)</span>
@@ -380,7 +422,7 @@ export default function CloudStudyJamsRegisterPage() {
                   id="fullName"
                   required
                   value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  onChange={(e) => saveFormData('fullName', e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your full name"
                 />
@@ -433,7 +475,7 @@ export default function CloudStudyJamsRegisterPage() {
                       name="hasLaptop"
                       value="yes"
                       checked={formData.hasLaptop === "yes"}
-                      onChange={(e) => setFormData({ ...formData, hasLaptop: e.target.value })}
+                      onChange={(e) => saveFormData('hasLaptop', e.target.value)}
                       className="mr-3"
                       required
                     />
