@@ -173,7 +173,7 @@ export default function EventsPage() {
             <div className="bg-white border border-gray-200 rounded-2xl shadow-xl p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 font-display">{monthName}</h2>
               
-              <div className="relative">
+              <div>
                 <div className="grid grid-cols-7 gap-2 mb-4">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                     <div key={day} className="text-center font-semibold text-gray-600 text-sm py-2">
@@ -182,7 +182,7 @@ export default function EventsPage() {
                   ))}
                 </div>
                 
-                <div className="relative grid grid-cols-7 gap-2">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', position: 'relative' }}>
                   {calendarDays.map((day, index) => {
                     const hasEvent = hasEventOnDate(day);
                     const eventsOnDay = getEventsForDate(day);
@@ -191,7 +191,7 @@ export default function EventsPage() {
                     return (
                       <div
                         key={index}
-                        className={`relative aspect-square border rounded-lg p-2 transition-all ${
+                        className={`relative border rounded-lg p-2 transition-all ${
                           day
                             ? hasEvent
                               ? 'border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100'
@@ -200,6 +200,7 @@ export default function EventsPage() {
                               : 'border-gray-200 hover:bg-gray-50 cursor-pointer'
                             : 'border-transparent'
                         }`}
+                        style={{ aspectRatio: '1', minHeight: '80px' }}
                         onClick={() => day && hasEvent && setSelectedDate(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
                       >
                         {day && (
@@ -211,7 +212,7 @@ export default function EventsPage() {
                     );
                   })}
                   
-                  {/* Render multi-day events as spanning bars */}
+                  {/* Render multi-day events as spanning bars using grid positioning */}
                   {multiDayEvents.map((event) => {
                     if (!event) return null;
                     
@@ -224,32 +225,22 @@ export default function EventsPage() {
                     const startWeek = Math.floor(startIndex / 7);
                     const endWeek = Math.floor(endIndex / 7);
                     
-                    // Get a reference cell width (percentage based on 7 columns with gaps)
-                    const cellWidthPercent = 14.28571; // 100 / 7
-                    const gapSize = 8; // 0.5rem = 8px
-                    
                     if (startWeek === endWeek) {
-                      // Single row event
-                      const startCol = startIndex % 7;
-                      const endCol = endIndex % 7;
-                      const span = endCol - startCol + 1;
-                      
-                      const left = `calc(${startCol * cellWidthPercent}% + ${startCol * gapSize}px)`;
-                      const width = `calc(${span * cellWidthPercent}% + ${(span - 1) * gapSize}px)`;
-                      
-                      // Position at bottom of the cell row (using aspect-square height)
-                      const rowTopPercent = startWeek * 100;
-                      const top = `calc(${rowTopPercent}% + ${startWeek * gapSize}px + 28px)`;
+                      // Single row event - use grid positioning
+                      const startCol = (startIndex % 7) + 1;
+                      const endCol = (endIndex % 7) + 2; // +2 because grid-column-end is exclusive
+                      const row = startWeek + 1;
                       
                       return (
                         <div
                           key={event.id}
-                          className={`absolute ${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity z-10`}
+                          className={`${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity z-10 flex items-center`}
                           style={{
-                            left,
-                            width,
-                            top,
-                            height: '24px'
+                            gridColumn: `${startCol} / ${endCol}`,
+                            gridRow: row,
+                            height: '28px',
+                            alignSelf: 'end',
+                            marginBottom: '8px'
                           }}
                           onClick={() => setSelectedDate(event.date)}
                         >
@@ -263,26 +254,20 @@ export default function EventsPage() {
                         const weekStartIndex = week === startWeek ? startIndex : week * 7;
                         const weekEndIndex = week === endWeek ? endIndex : (week + 1) * 7 - 1;
                         
-                        const startCol = weekStartIndex % 7;
-                        const endCol = weekEndIndex % 7;
-                        const span = endCol - startCol + 1;
-                        
-                        const left = `calc(${startCol * cellWidthPercent}% + ${startCol * gapSize}px)`;
-                        const width = `calc(${span * cellWidthPercent}% + ${(span - 1) * gapSize}px)`;
-                        
-                        // Position at bottom of the cell row
-                        const rowTopPercent = week * 100;
-                        const top = `calc(${rowTopPercent}% + ${week * gapSize}px + 28px)`;
+                        const startCol = (weekStartIndex % 7) + 1;
+                        const endCol = (weekEndIndex % 7) + 2;
+                        const row = week + 1;
                         
                         bars.push(
                           <div
                             key={`${event.id}-week-${week}`}
-                            className={`absolute ${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity z-10`}
+                            className={`${event.color} text-white text-xs font-medium px-2 py-1 rounded cursor-pointer hover:opacity-90 transition-opacity z-10 flex items-center`}
                             style={{
-                              left,
-                              width,
-                              top,
-                              height: '24px'
+                              gridColumn: `${startCol} / ${endCol}`,
+                              gridRow: row,
+                              height: '28px',
+                              alignSelf: 'end',
+                              marginBottom: '8px'
                             }}
                             onClick={() => setSelectedDate(event.date)}
                           >
