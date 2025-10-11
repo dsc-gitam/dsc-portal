@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { getPrismaClient, isDatabaseAvailable } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/admin';
 import type { Session } from 'next-auth';
+import type { RecruitmentApplication } from '@prisma/client';
 
 // GET statistics for admin dashboard
 export async function GET(request: NextRequest) {
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
     // Check if user is admin
     try {
       await requireAdmin(session.user.email);
-    } catch (error) {
+    } catch {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
@@ -44,36 +45,36 @@ export async function GET(request: NextRequest) {
     const stats = {
       total: applications.length,
       byGender: {
-        male: applications.filter(app => app.gender?.toLowerCase() === 'male').length,
-        female: applications.filter(app => app.gender?.toLowerCase() === 'female').length,
-        other: applications.filter(app => 
+        male: applications.filter((app: RecruitmentApplication) => app.gender?.toLowerCase() === 'male').length,
+        female: applications.filter((app: RecruitmentApplication) => app.gender?.toLowerCase() === 'female').length,
+        other: applications.filter((app: RecruitmentApplication) => 
           app.gender && 
           app.gender.toLowerCase() !== 'male' && 
           app.gender.toLowerCase() !== 'female'
         ).length,
-        notSpecified: applications.filter(app => !app.gender).length
+        notSpecified: applications.filter((app: RecruitmentApplication) => !app.gender).length
       },
       byYear: {
-        '1st': applications.filter(app => app.yearOfStudy?.includes('1') || app.yearOfStudy?.toLowerCase().includes('first')).length,
-        '2nd': applications.filter(app => app.yearOfStudy?.includes('2') || app.yearOfStudy?.toLowerCase().includes('second')).length,
-        '3rd': applications.filter(app => app.yearOfStudy?.includes('3') || app.yearOfStudy?.toLowerCase().includes('third')).length,
-        '4th': applications.filter(app => app.yearOfStudy?.includes('4') || app.yearOfStudy?.toLowerCase().includes('fourth')).length
+        '1st': applications.filter((app: RecruitmentApplication) => app.yearOfStudy?.includes('1') || app.yearOfStudy?.toLowerCase().includes('first')).length,
+        '2nd': applications.filter((app: RecruitmentApplication) => app.yearOfStudy?.includes('2') || app.yearOfStudy?.toLowerCase().includes('second')).length,
+        '3rd': applications.filter((app: RecruitmentApplication) => app.yearOfStudy?.includes('3') || app.yearOfStudy?.toLowerCase().includes('third')).length,
+        '4th': applications.filter((app: RecruitmentApplication) => app.yearOfStudy?.includes('4') || app.yearOfStudy?.toLowerCase().includes('fourth')).length
       },
-      byRole: applications.reduce((acc: any, app) => {
+      byRole: applications.reduce((acc: Record<string, number>, app: RecruitmentApplication) => {
         const role = app.selectedRole || 'Not specified';
         acc[role] = (acc[role] || 0) + 1;
         return acc;
       }, {}),
-      byBranch: applications.reduce((acc: any, app) => {
+      byBranch: applications.reduce((acc: Record<string, number>, app: RecruitmentApplication) => {
         const branch = app.branch || 'Not specified';
         acc[branch] = (acc[branch] || 0) + 1;
         return acc;
       }, {}),
-      technical: applications.filter(app => {
+      technical: applications.filter((app: RecruitmentApplication) => {
         const role = app.selectedRole?.toLowerCase() || '';
         return role.includes('technical') || role.includes('developer') || role.includes('web') || role.includes('app');
       }).length,
-      nonTechnical: applications.filter(app => {
+      nonTechnical: applications.filter((app: RecruitmentApplication) => {
         const role = app.selectedRole?.toLowerCase() || '';
         return role.includes('marketing') || role.includes('design') || role.includes('content') || role.includes('management');
       }).length

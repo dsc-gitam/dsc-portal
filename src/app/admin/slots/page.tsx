@@ -112,9 +112,9 @@ export default function AdminSlotsPage() {
 
       alert("Slot deleted successfully!");
       fetchSlots();
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error deleting slot:", err);
-      alert(err.message || "Failed to delete slot");
+      alert(err instanceof Error ? err.message : "Failed to delete slot");
     }
   };
 

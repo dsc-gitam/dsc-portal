@@ -64,7 +64,7 @@ export default function Header() {
                   <div className="flex items-center space-x-4">
                     <div className="relative group">
                       <button className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                        <img
+                        <Image
                           src={session.user?.image || "/default-avatar.png"}
                           alt={session.user?.name || "Profile"}
                           width={32}

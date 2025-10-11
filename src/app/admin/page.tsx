@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
 interface Application {
@@ -88,14 +88,7 @@ export default function AdminDashboard() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (session?.user?.email) {
-      fetchApplications();
-      fetchStats();
-    }
-  }, [session, yearFilter, branchFilter, statusFilter, roleFilter]);
-
-  const fetchApplications = async () => {
+  const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -123,9 +116,9 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [yearFilter, branchFilter, statusFilter, roleFilter]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/stats?status=${statusFilter}`);
       
@@ -136,7 +129,14 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error("Error fetching stats:", err);
     }
-  };
+  }, [statusFilter]);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetchApplications();
+      fetchStats();
+    }
+  }, [session, fetchApplications, fetchStats]);
 
   const handleShortlist = async (applicationId: string) => {
     if (!confirm("Are you sure you want to shortlist this candidate? They will receive an email to book their interview slot.")) {
@@ -510,7 +510,7 @@ export default function AdminDashboard() {
               </Link>
             </div>
             <p className="text-gray-600">
-              Create and manage interview slots for shortlisted candidates. Click "Manage Slots" to access the slot management interface.
+              Create and manage interview slots for shortlisted candidates. Click &quot;Manage Slots&quot; to access the slot management interface.
             </p>
           </div>
         )}

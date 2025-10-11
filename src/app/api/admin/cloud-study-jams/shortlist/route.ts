@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     // Check if user is admin
     try {
       await requireAdmin(session.user.email);
-    } catch (error) {
+    } catch {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     // Check if user is admin
     try {
       await requireAdmin(session.user.email);
-    } catch (error) {
+    } catch {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
     }
 
@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
     const graduationYearFilter = searchParams.get('graduationYear');
 
     // Build where clause
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {
       status: {
         not: 'draft' // Only show submitted registrations

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { getPrismaClient, isDatabaseAvailable } from '@/lib/prisma';
 import { sendInterviewConfirmation } from '@/lib/email';
 import type { Session } from 'next-auth';
+import type { Prisma } from '@prisma/client';
 
 // POST to book an interview slot
 export async function POST(request: NextRequest) {
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create booking and mark slot as unavailable in a transaction
-    const booking = await prisma.$transaction(async (tx) => {
+    const booking = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const newBooking = await tx.interviewBooking.create({
         data: {
           userId: user.id,

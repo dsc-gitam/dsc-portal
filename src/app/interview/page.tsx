@@ -21,9 +21,8 @@ export default function InterviewBookingPage() {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [isBooked, setIsBooked] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
-  const [bookedSlotData, setBookedSlotData] = useState<any>(null);
+  const [bookedSlotData, setBookedSlotData] = useState<TimeSlot | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -40,7 +39,6 @@ export default function InterviewBookingPage() {
   const fetchSlots = async () => {
     try {
       setLoading(true);
-      setError("");
       
       const response = await fetch("/api/admin/slots");
       
@@ -52,7 +50,6 @@ export default function InterviewBookingPage() {
       setAvailableSlots(available);
     } catch (err) {
       console.error("Error fetching slots:", err);
-      setError("Failed to load available slots");
     } finally {
       setLoading(false);
     }
@@ -76,9 +73,9 @@ export default function InterviewBookingPage() {
       const data = await response.json();
       setBookedSlotData(data.slot);
       setIsBooked(true);
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error booking slot:", err);
-      alert(err.message || "Failed to book slot");
+      alert(err instanceof Error ? err.message : "Failed to book slot");
     }
   };
 

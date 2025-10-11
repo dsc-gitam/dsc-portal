@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
 interface Registration {
@@ -61,14 +61,7 @@ export default function CloudStudyJamsAdmin() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (session?.user?.email) {
-      fetchRegistrations();
-      fetchStats();
-    }
-  }, [session, statusFilter, genderFilter, graduationYearFilter]);
-
-  const fetchRegistrations = async () => {
+  const fetchRegistrations = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -95,9 +88,9 @@ export default function CloudStudyJamsAdmin() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter, genderFilter, graduationYearFilter]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/cloud-study-jams/stats?status=${statusFilter}`);
       
@@ -108,7 +101,14 @@ export default function CloudStudyJamsAdmin() {
     } catch (err) {
       console.error("Error fetching stats:", err);
     }
-  };
+  }, [statusFilter]);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetchRegistrations();
+      fetchStats();
+    }
+  }, [session, fetchRegistrations, fetchStats]);
 
   const handleShortlist = async (registrationId: string) => {
     if (!confirm("Are you sure you want to shortlist this participant?")) {
