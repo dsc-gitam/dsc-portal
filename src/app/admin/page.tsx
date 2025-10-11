@@ -248,6 +248,12 @@ export default function AdminDashboard() {
             >
               Interview Slots
             </button>
+            <Link
+              href="/admin/cloud-study-jams"
+              className="py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm transition-colors"
+            >
+              Cloud Study Jams →
+            </Link>
           </div>
         </div>
       </div>
