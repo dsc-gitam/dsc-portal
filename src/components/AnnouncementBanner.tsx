@@ -4,15 +4,16 @@ import Link from "next/link";
 
 export default function AnnouncementBanner() {
   return (
-    <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 text-white py-2 overflow-hidden relative">
+    <div className="text-white bg-black border-y-[1.5px] border-black py-2 overflow-hidden relative text-sm">
       <div className="marquee-container">
         <div className="marquee-content">
           <span className="inline-block px-4">
-            🎉 Cloud Study Jams have started! Registrations are open - Closing on 12th October EOD
+            ☁️ Cloud Study Jams have started! Registrations are open - Closing
+            on 12th October EOD
           </span>
           <Link
             href="/cloud-study-jams"
-            className="inline-block bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mx-2"
+            className="inline-block bg-white/20 text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-100 hover:text-gray-800 transition-all whitespace-nowrap mx-2"
           >
             Register Now
           </Link>
@@ -21,16 +22,17 @@ export default function AnnouncementBanner() {
           </span>
           <Link
             href="/recruitment"
-            className="inline-block bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mx-2"
+            className="inline-block bg-white/20 text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-100 hover:text-gray-800 transition-all whitespace-nowrap mx-2"
           >
             Apply Now
           </Link>
           <span className="inline-block px-4">
-            🎉 Cloud Study Jams have started! Registrations are open - Closing on 12th October EOD
+            ☁️ Cloud Study Jams have started! Registrations are open - Closing
+            on 12th October EOD
           </span>
           <Link
             href="/cloud-study-jams"
-            className="inline-block bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mx-2"
+            className="inline-block  bg-white/20 text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-100 hover:text-gray-800 transition-all whitespace-nowrap mx-2"
           >
             Register Now
           </Link>
@@ -39,7 +41,7 @@ export default function AnnouncementBanner() {
           </span>
           <Link
             href="/recruitment"
-            className="inline-block bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all whitespace-nowrap mx-2"
+            className="inline-block bg-white/20 text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-100 hover:text-gray-800 transition-all whitespace-nowrap mx-2"
           >
             Apply Now
           </Link>

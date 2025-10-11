@@ -28,7 +28,9 @@ export default function CountdownBanner() {
 
       return {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        hours: Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        ),
         minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
         seconds: Math.floor((difference % (1000 * 60)) / 1000),
       };
@@ -63,48 +65,45 @@ export default function CountdownBanner() {
   }
 
   return (
-    <div className="bg-gradient-to-r from-red-50 to-orange-50 border-b-2 border-red-200 py-3 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="bg-gray-200 py-1 border-black border-y-[1.5px]">
+      <div className="px-6 lg:px-8 mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-lg">⏰</span>
-            <span className="text-sm font-semibold text-red-900">Core Team Recruitment Closes Soon!</span>
+            <span className="w-2 h-2 bg-green-600 rounded-full mr-2 animate-pulse"></span>
+            <span className="font-medium text-sm text-black">
+              Core Team Recruitment Closes Soon!
+            </span>
           </div>
-          
-          <div className="flex items-center gap-2 md:gap-4">
+
+          <div className="flex items-center gap-2 md:gap-8">
             <div className="flex gap-2">
               <div className="text-center">
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm border border-red-200 min-w-[40px]">
-                  <div className="text-lg font-bold text-red-600">{timeLeft.days}</div>
-                  <div className="text-[10px] text-gray-600 font-medium">Days</div>
+                <div className="flex items-end rounded-lg py-1">
+                  <div className="text-lg font-bold">{timeLeft.days}</div>
+                  <div className=" text-gray-500 font-medium">d</div>
                 </div>
               </div>
               <div className="text-center">
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm border border-orange-200 min-w-[40px]">
-                  <div className="text-lg font-bold text-orange-600">{timeLeft.hours}</div>
-                  <div className="text-[10px] text-gray-600 font-medium">Hours</div>
+                <div className="flex items-end rounded-lg py-1">
+                  <div className="text-lg font-bold animate-">
+                    {timeLeft.hours}
+                  </div>
+                  <div className=" text-gray-500 font-medium">h</div>
                 </div>
               </div>
               <div className="text-center">
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm border border-yellow-200 min-w-[40px]">
-                  <div className="text-lg font-bold text-yellow-600">{timeLeft.minutes}</div>
-                  <div className="text-[10px] text-gray-600 font-medium">Mins</div>
+                <div className="flex items-end rounded-lg py-1">
+                  <div className="text-lg font-bold">{timeLeft.minutes}</div>
+                  <div className=" text-gray-500 font-medium">m</div>
                 </div>
               </div>
               <div className="text-center">
-                <div className="bg-white rounded-lg px-2 py-1 shadow-sm border border-green-200 min-w-[40px]">
-                  <div className="text-lg font-bold text-green-600">{timeLeft.seconds}</div>
-                  <div className="text-[10px] text-gray-600 font-medium">Secs</div>
+                <div className="flex items-end rounded-lg py-1">
+                  <div className="text-lg font-bold">{timeLeft.seconds}</div>
+                  <div className=" text-gray-500 font-medium">s</div>
                 </div>
               </div>
             </div>
-            
-            <Link
-              href="/recruitment"
-              className="bg-gradient-to-r from-red-600 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:shadow-lg transition-all whitespace-nowrap"
-            >
-              Apply Now
-            </Link>
           </div>
         </div>
       </div>

@@ -14,216 +14,248 @@ export default function Header() {
   return (
     <>
       <div className="sticky top-0 z-50">
-      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-4">
-  {/*             <Image
-                src="/gdgoc_logo.png"
-                alt="GDGoC Logo"
-                width={40}
-                height={40}
-                className="w-10 h-10 object-contain"
-              /> */}
-              <Image
-                src="/GDG-Lockup-1Line-Black.png"
-                alt="Google Developer Groups on Campus"
-                width={200}
-                height={40}
-                className="h-8 w-auto object-contain"
-              />
-            </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/"
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
-              >
-                About
-              </Link>
-              <Link
-                href="/events"
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
-              >
-                Events
-              </Link>
-              <Link
-                href="/recruitment"
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
-              >
-                Recruitment
-              </Link>
-            {status === "loading" ? (
-              <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
-            ) : session ? (
+        <header className="bg-white border-b border-gray-100">
+          <div className="mx-auto px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-4">
-                <div className="relative group">
-                  <button className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                    <img
-                      src={session.user?.image || "/default-avatar.png"}
-                      alt={session.user?.name || "Profile"}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <span className="text-sm font-medium text-gray-700">
-                      {session.user?.name}
-                    </span>
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="py-2">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900">
-                          {session.user?.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {session.user?.email}
-                        </p>
-                      </div>
-                      <Link
-                        href="/recruitment"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        My Application
-                      </Link>
-                      <button
-                        onClick={() => signOut()}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        Sign Out
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <Image
+                  src="/gdgoc_logo.png"
+                  alt="GDGoC Logo"
+                  width={40}
+                  height={40}
+                  className="h-6 w-auto object-contain md:hidden"
+                />
+                <Image
+                  src="/GDG-Lockup-1Line-Black.png"
+                  alt="Google Developer Groups on Campus"
+                  width={200}
+                  height={40}
+                  className="h-6 w-auto object-contain hidden md:block"
+                />
               </div>
-            ) : (
-              <Link
-                href="/auth/signin"
-                className="bg-gray-900 text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-all shadow-sm hover:shadow-md font-medium text-sm"
-              >
-                Sign In
-              </Link>
-            )}
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
-      </div>
-      </header>
-
-      {/* Mobile Navigation Drawer */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)}>
-          <div 
-            className="absolute right-0 top-0 h-full w-64 bg-white shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6">
-              <div className="flex justify-end mb-8">
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <nav className="space-y-4">
+              <nav className="hidden md:flex items-center space-x-8">
                 <Link
                   href="/"
-                  className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
                 >
                   Home
                 </Link>
                 <Link
                   href="/about"
-                  className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
                 >
                   About
                 </Link>
                 <Link
                   href="/events"
-                  className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
                 >
                   Events
                 </Link>
                 <Link
                   href="/recruitment"
-                  className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
                 >
                   Recruitment
                 </Link>
-
-                <div className="pt-4 border-t border-gray-200">
-                  {status === "loading" ? (
-                    <div className="h-10 bg-gray-200 rounded-lg animate-pulse"></div>
-                  ) : session ? (
-                    <div className="space-y-2">
-                      <div className="px-4 py-2 bg-gray-50 rounded-lg">
-                        <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
-                        <p className="text-xs text-gray-500">{session.user?.email}</p>
-                      </div>
-                      <Link
-                        href="/recruitment"
-                        className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        My Application
-                      </Link>
-                      <button
-                        onClick={() => {
-                          signOut();
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="block w-full text-left text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        Sign Out
+                {status === "loading" ? (
+                  <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+                ) : session ? (
+                  <div className="flex items-center space-x-4">
+                    <div className="relative group">
+                      <button className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <img
+                          src={session.user?.image || "/default-avatar.png"}
+                          alt={session.user?.name || "Profile"}
+                          width={32}
+                          height={32}
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {session.user?.name}
+                        </span>
                       </button>
+
+                      {/* Dropdown Menu */}
+                      <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div className="py-2">
+                          <div className="px-4 py-2 border-b border-gray-100">
+                            <p className="text-sm font-medium text-gray-900">
+                              {session.user?.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {session.user?.email}
+                            </p>
+                          </div>
+                          <Link
+                            href="/recruitment"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            My Application
+                          </Link>
+                          <button
+                            onClick={() => signOut()}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            Sign Out
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  ) : (
-                    <Link
-                      href="/auth/signin"
-                      className="block bg-gray-900 text-white text-center px-6 py-3 rounded-full hover:bg-gray-800 transition-all font-medium"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Sign In
-                    </Link>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <Link
+                    href="/auth/signin"
+                    className="text-blue-900 font-medium text-sm"
+                  >
+                    Sign In
+                  </Link>
+                )}
               </nav>
+
+              {/* Mobile Menu Button */}
+              <button
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="w-6 h-6 text-gray-700"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  {isMobileMenuOpen ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  )}
+                </svg>
+              </button>
             </div>
           </div>
-        </div>
-      )}
+        </header>
 
-      <AnnouncementBanner />
-      <CountdownBanner />
+        {/* Mobile Navigation Drawer */}
+        {isMobileMenuOpen && (
+          <div
+            className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <div
+              className="absolute right-0 top-0 h-full w-64 bg-white shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                <div className="flex justify-end mb-8">
+                  <button
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <svg
+                      className="w-6 h-6 text-gray-700"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                <nav className="space-y-4">
+                  <Link
+                    href="/"
+                    className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    About
+                  </Link>
+                  <Link
+                    href="/events"
+                    className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Events
+                  </Link>
+                  <Link
+                    href="/recruitment"
+                    className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Recruitment
+                  </Link>
+
+                  <div className="pt-4 border-t border-gray-200">
+                    {status === "loading" ? (
+                      <div className="h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+                    ) : session ? (
+                      <div className="space-y-2">
+                        <div className="px-4 py-2 bg-gray-50 rounded-lg">
+                          <p className="text-sm font-medium text-gray-900">
+                            {session.user?.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {session.user?.email}
+                          </p>
+                        </div>
+                        <Link
+                          href="/recruitment"
+                          className="block text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          My Application
+                        </Link>
+                        <button
+                          onClick={() => {
+                            signOut();
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className="block w-full text-left text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    ) : (
+                      <Link
+                        href="/auth/signin"
+                        className="block bg-gray-900 text-white text-center px-6 py-3 rounded-full hover:bg-gray-800 transition-all font-medium"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Sign In
+                      </Link>
+                    )}
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <CountdownBanner />
+        <AnnouncementBanner />
       </div>
     </>
   );
