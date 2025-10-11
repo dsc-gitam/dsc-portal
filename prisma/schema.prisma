@@ -15,9 +15,11 @@ model User {
   email String @unique
   name  String?
   image String?
+  role  String @default("user") // user, admin
   
   applications RecruitmentApplication[]
   cloudStudyJamsRegistrations CloudStudyJamsRegistration[]
+  interviewBookings InterviewBooking[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,8 +74,12 @@ model RecruitmentApplication {
   additionalInfo     String?
   
   // Application Status
-  status             String @default("draft") // draft, submitted, under_review, accepted, rejected
+  status             String @default("draft") // draft, submitted, under_review, shortlisted, rejected
   submittedAt        DateTime?
+  shortlistedAt      DateTime?
+  gender             String?
+  
+  interviewBooking   InterviewBooking?
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -102,11 +108,47 @@ model CloudStudyJamsRegistration {
   completionAgreement     String?
   
   // Application Status
-  status                  String @default("draft") // draft, submitted
+  status                  String @default("draft") // draft, submitted, shortlisted, rejected
   submittedAt             DateTime?
+  shortlistedAt           DateTime?
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
   @@map("cloud_study_jams_registrations")
+}
+
+model InterviewSlot {
+  id          String @id @default(cuid())
+  date        DateTime
+  startTime   String
+  endTime     String
+  venue       String
+  isAvailable Boolean @default(true)
+  
+  bookings    InterviewBooking[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("interview_slots")
+}
+
+model InterviewBooking {
+  id            String @id @default(cuid())
+  userId        String @unique
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  applicationId String @unique
+  application   RecruitmentApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  
+  slotId        String
+  slot          InterviewSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  
+  status        String @default("confirmed") // confirmed, completed, cancelled
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("interview_bookings")
 }

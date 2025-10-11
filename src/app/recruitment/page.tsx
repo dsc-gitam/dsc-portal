@@ -123,6 +123,11 @@ export default function RecruitmentPage() {
         if (response.ok) {
           const data = await response.json();
           if (data.application) {
+            // If application is already submitted, redirect to confirmation page
+            if (data.application.status === 'submitted' || data.application.status === 'under_review' || data.application.status === 'shortlisted') {
+              router.push('/confirmation');
+              return;
+            }
             setFormData(data.application);
           }
         }
@@ -132,7 +137,7 @@ export default function RecruitmentPage() {
     };
 
     loadFormData();
-  }, [session]);
+  }, [session, router]);
 
   useEffect(() => {
     const filledFields = requiredFields.filter(field => formData[field as keyof FormData]?.trim()).length;

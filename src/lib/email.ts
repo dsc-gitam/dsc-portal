@@ -196,3 +196,85 @@ export async function sendInterviewConfirmation(
     return { success: false, error };
   }
 }
+
+export async function sendShortlistNotification(
+  email: string,
+  name: string,
+  portalUrl: string = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+) {
+  const mailOptions = {
+    from: process.env.SMTP_USER,
+    to: email,
+    subject: 'DSC GITAM - You\'re Shortlisted! 🎉',
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>DSC GITAM Shortlist Notification</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #34A853, #4285F4); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #fff; padding: 30px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 10px 10px; }
+            .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+            .button { display: inline-block; background: #34A853; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+            .highlight { background: #e8f5e9; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #34A853; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🎉 Congratulations!</h1>
+              <p>You've been shortlisted for DSC GITAM Core Team</p>
+            </div>
+            
+            <div class="content">
+              <h2>Hi ${name},</h2>
+              
+              <p>Great news! We're excited to inform you that your application has been shortlisted for the DSC GITAM core team recruitment.</p>
+              
+              <div class="highlight">
+                <h3>Next Steps</h3>
+                <p>Please book your interview slot at your earliest convenience through the DSC Portal.</p>
+                <p><strong>Important:</strong> Slots are limited and available on a first-come, first-served basis.</p>
+              </div>
+              
+              <div style="text-align: center;">
+                <a href="${portalUrl}/interview" class="button">Book Your Interview Slot</a>
+              </div>
+              
+              <h3>What to Expect</h3>
+              <ul>
+                <li>Select a convenient date and time for your interview</li>
+                <li>Receive a confirmation email with interview details</li>
+                <li>Interview duration: 45 minutes (Virtual via Google Meet)</li>
+                <li>Be prepared to discuss your application and projects</li>
+              </ul>
+              
+              <p><strong>Note:</strong> Please book your slot within 48 hours to avoid missing out on the opportunity.</p>
+              
+              <p>We look forward to speaking with you!</p>
+              
+              <p>Best regards,<br>DSC GITAM Recruitment Team</p>
+            </div>
+            
+            <div class="footer">
+              <p>Google Developer Groups on Campus - GITAM University</p>
+              <p>For any questions, contact us at <a href="mailto:dsc@gitam.in">dsc@gitam.in</a></p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Shortlist notification email sent successfully');
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending shortlist notification email:', error);
+    return { success: false, error };
+  }
+}
