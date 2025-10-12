@@ -13,8 +13,8 @@ function AuthErrorContent() {
       case "AccessDenied":
         return {
           title: "Access Denied",
-          message: "You must use a valid @gitam.in email address to access this portal.",
-          description: "Only GITAM students and faculty are allowed to sign in."
+          message: "There was a problem with your sign-in attempt.",
+          description: "Please try again or contact support if the problem continues."
         };
       case "Configuration":
         return {
@@ -104,7 +104,7 @@ function AuthErrorContent() {
           <div className="space-y-3">
             <div className="flex items-start">
               <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              <span className="text-gray-700">Make sure you&apos;re using your official GITAM email address ending with @gitam.in</span>
+              <span className="text-gray-700">Make sure you&apos;re using a valid Google email address</span>
             </div>
             <div className="flex items-start">
               <span className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>

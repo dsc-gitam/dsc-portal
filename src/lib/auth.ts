@@ -11,8 +11,8 @@ export const authOptions = {
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async signIn({ user }: { user: any }) {
-      // Restrict to @gitam.in email addresses only
-      if (user.email && user.email.includes("gitam")) {
+      // Allow any Google email address for Cloud Study Jams registration
+      if (user.email) {
         // Create or update user in database
         if (isDatabaseAvailable()) {
           try {
