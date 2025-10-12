@@ -128,7 +128,7 @@ export async function PUT(request: NextRequest) {
 
     const data = await request.json();
 
-    const registration = await prisma.cloudStudyJamsRegistration.findFirst({
+    let registration = await prisma.cloudStudyJamsRegistration.findFirst({
       where: { userId: user.id },
     });
 
