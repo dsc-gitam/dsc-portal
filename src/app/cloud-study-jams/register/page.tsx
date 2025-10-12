@@ -249,16 +249,6 @@ export default function CloudStudyJamsRegisterPage() {
               Campus Participant Enrolment Form
             </h2>
           </div>
-
-          <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-6">
-            <h3 className="font-bold text-gray-900 mb-2">[IMPORTANT] Disclaimer for GDG on Campus Organizer:</h3>
-            <p className="text-gray-800 text-sm leading-relaxed">
-              This form is provided only as a reference template. Organizers must create a copy of the form in their own 
-              Google Drive to collect registrations from their participants. Please do not submit any responses in this form—any 
-              submissions here will not be considered. All participant data should be collected through the organizer&apos;s own copied form.
-            </p>
-          </div>
-
           <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-lg">
             <h3 className="font-bold text-gray-900 mb-3">What is Google Cloud Study Jams?</h3>
             <p className="text-gray-800 text-sm leading-relaxed mb-4">

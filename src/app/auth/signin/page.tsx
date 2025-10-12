@@ -69,7 +69,7 @@ export default function SignInPage() {
             Sign in to <span className="text-primary">GDGoC Portal</span>
           </h1>
           <p className="text-gray-600">
-            Use your GITAM email address to access the portal
+            Use your Google account to access the portal
           </p>
         </div>
 
@@ -119,15 +119,15 @@ export default function SignInPage() {
           <ul className="text-blue-800 space-y-2 text-sm">
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              You must use your official GITAM email address (@gitam.in)
+              You can use any Google account to sign in
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              Only GITAM students and faculty can access this portal
+              Access to Cloud Study Jams registration is open to all users
             </li>
             <li className="flex items-start">
               <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-              Your information will be used solely for GDGoC recruitment purposes
+              Your information will be used solely for GDGoC event purposes
             </li>
           </ul>
         </div>
