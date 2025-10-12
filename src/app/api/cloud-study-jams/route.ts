@@ -133,7 +133,16 @@ export async function PUT(request: NextRequest) {
     });
 
     if (!registration) {
-      return NextResponse.json({ error: 'Registration not found' }, { status: 404 });
+      registration = await prisma.cloudStudyJamsRegistration.create({
+        data: {
+          userId: user.id,
+          ...data,
+        status: 'submitted',
+        submittedAt: new Date(),
+        updatedAt: new Date(),
+        },
+      });
+    return NextResponse.json({ registration: registration });
     }
 
     const updatedRegistration = await prisma.cloudStudyJamsRegistration.update({
