@@ -1,37 +1,81 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 interface TimeSlot {
   id: string;
   date: string;
-  time: string;
-  available: boolean;
+  startTime: string;
+  endTime: string;
+  venue: string;
+  isAvailable: boolean;
 }
 
 export default function InterviewBookingPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [isBooked, setIsBooked] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+  const [bookedSlotData, setBookedSlotData] = useState<TimeSlot | null>(null);
 
-  // Mock data for available interview slots
-  const availableSlots: TimeSlot[] = [
-    { id: "1", date: "2025-02-15", time: "09:00 AM", available: true },
-    { id: "2", date: "2025-02-15", time: "10:00 AM", available: true },
-    { id: "3", date: "2025-02-15", time: "11:00 AM", available: false },
-    { id: "4", date: "2025-02-15", time: "02:00 PM", available: true },
-    { id: "5", date: "2025-02-15", time: "03:00 PM", available: true },
-    { id: "6", date: "2025-02-16", time: "09:00 AM", available: true },
-    { id: "7", date: "2025-02-16", time: "10:00 AM", available: false },
-    { id: "8", date: "2025-02-16", time: "11:00 AM", available: true },
-    { id: "9", date: "2025-02-16", time: "02:00 PM", available: true },
-    { id: "10", date: "2025-02-16", time: "03:00 PM", available: true },
-  ];
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/signin");
+    }
+  }, [status, router]);
 
-  const handleBookSlot = () => {
-    if (selectedSlot) {
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetchSlots();
+    }
+  }, [session]);
+
+  const fetchSlots = async () => {
+    try {
+      setLoading(true);
+      
+      const response = await fetch("/api/admin/slots");
+      
+      if (!response.ok) throw new Error("Failed to fetch slots");
+      
+      const data = await response.json();
+      // Filter only available slots
+      const available = data.slots.filter((slot: TimeSlot) => slot.isAvailable);
+      setAvailableSlots(available);
+    } catch (err) {
+      console.error("Error fetching slots:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBookSlot = async () => {
+    if (!selectedSlot) return;
+
+    try {
+      const response = await fetch("/api/interview/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slotId: selectedSlot }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to book slot");
+      }
+
+      const data = await response.json();
+      setBookedSlotData(data.slot);
       setIsBooked(true);
+    } catch (err) {
+      console.error("Error booking slot:", err);
+      alert(err instanceof Error ? err.message : "Failed to book slot");
     }
   };
 
@@ -47,7 +91,7 @@ export default function InterviewBookingPage() {
 
   const groupSlotsByDate = (slots: TimeSlot[]) => {
     return slots.reduce((groups, slot) => {
-      const date = slot.date;
+      const date = slot.date.split('T')[0];
       if (!groups[date]) {
         groups[date] = [];
       }
@@ -59,7 +103,18 @@ export default function InterviewBookingPage() {
   const groupedSlots = groupSlotsByDate(availableSlots);
   const selectedSlotData = availableSlots.find(slot => slot.id === selectedSlot);
 
-  if (isBooked) {
+  if (status === "loading" || loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isBooked && bookedSlotData) {
     return (
       <div className="min-h-screen bg-white">
         {/* Header */}
@@ -110,14 +165,14 @@ export default function InterviewBookingPage() {
               Your interview slot has been successfully booked. We&apos;ve sent a confirmation email with all the details.
             </p>
 
-            {selectedSlotData && (
+            {bookedSlotData && (
               <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
                 <h2 className="text-lg font-semibold text-green-900 mb-4">Interview Details</h2>
                 <div className="text-left space-y-2">
-                  <p><span className="font-medium text-green-900">Date:</span> <span className="text-green-700">{formatDate(selectedSlotData.date)}</span></p>
-                  <p><span className="font-medium text-green-900">Time:</span> <span className="text-green-700">{selectedSlotData.time}</span></p>
+                  <p><span className="font-medium text-green-900">Date:</span> <span className="text-green-700">{formatDate(bookedSlotData.date)}</span></p>
+                  <p><span className="font-medium text-green-900">Time:</span> <span className="text-green-700">{bookedSlotData.startTime} - {bookedSlotData.endTime}</span></p>
+                  <p><span className="font-medium text-green-900">Venue:</span> <span className="text-green-700">{bookedSlotData.venue}</span></p>
                   <p><span className="font-medium text-green-900">Duration:</span> <span className="text-green-700">45 minutes</span></p>
-                  <p><span className="font-medium text-green-900">Format:</span> <span className="text-green-700">Virtual (Google Meet link will be provided)</span></p>
                 </div>
               </div>
             )}
@@ -219,18 +274,18 @@ export default function InterviewBookingPage() {
                   {slots.map((slot) => (
                     <button
                       key={slot.id}
-                      onClick={() => slot.available && setSelectedSlot(slot.id)}
-                      disabled={!slot.available}
+                      onClick={() => slot.isAvailable && setSelectedSlot(slot.id)}
+                      disabled={!slot.isAvailable}
                       className={`p-3 rounded-lg border text-sm font-medium transition-colors ${
                         selectedSlot === slot.id
                           ? 'bg-primary text-white border-primary'
-                          : slot.available
+                          : slot.isAvailable
                           ? 'bg-white text-gray-700 border-gray-300 hover:border-primary hover:bg-blue-50'
                           : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
                       }`}
                     >
-                      {slot.time}
-                      {!slot.available && (
+                      {slot.startTime} - {slot.endTime}
+                      {!slot.isAvailable && (
                         <div className="text-xs mt-1">Booked</div>
                       )}
                     </button>
@@ -245,8 +300,9 @@ export default function InterviewBookingPage() {
             <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <h3 className="font-medium text-blue-900 mb-2">Selected Slot</h3>
               <p className="text-blue-800">
-                {formatDate(selectedSlotData.date)} at {selectedSlotData.time}
+                {formatDate(selectedSlotData.date)} at {selectedSlotData.startTime} - {selectedSlotData.endTime}
               </p>
+              <p className="text-sm text-blue-700 mt-1">Venue: {selectedSlotData.venue}</p>
             </div>
           )}
 

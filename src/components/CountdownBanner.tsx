@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 
 // Recruitment deadline: October 12, 2025 at 5:00 PM
 const RECRUITMENT_DEADLINE = new Date("2025-10-12T17:00:00");
