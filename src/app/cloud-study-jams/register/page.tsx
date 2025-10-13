@@ -692,18 +692,6 @@ export default function CloudStudyJamsRegisterPage() {
               </p>
             </div>
           </div>
-
-          {/* Final Note */}
-          <div className="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-6">
-            <h3 className="font-bold text-gray-900 mb-2">Final Note:</h3>
-            <p className="text-sm text-gray-800">
-              This form is only a reference template to help you create your own registration form in your Drive.
-            </p>
-            <p className="text-sm text-gray-800 mt-2">
-              <strong>Please remember:</strong> do not submit any responses in this form. Any responses collected here will 
-              not be counted towards the campaign and will be disregarded.
-            </p>
-          </div>
         </form>
         </>
         )}
