@@ -2,8 +2,8 @@ import { getPrismaClient } from './prisma';
 
 // Admin credentials - in production, these should be stored more securely
 const ADMIN_EMAILS = [
-  'admin1@gitam.in',
-  'admin2@gitam.in'
+  'chandanakavya.123@gmail.com',
+  'manasmalla.dev@gmail.com'
 ];
 
 export async function isAdmin(email: string | null | undefined): Promise<boolean> {
