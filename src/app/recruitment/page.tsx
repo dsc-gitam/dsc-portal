@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 
 // Recruitment deadline: October 12, 2025 at 5:00 PM
-const RECRUITMENT_DEADLINE = new Date("2025-10-12T17:00:00");
+const RECRUITMENT_DEADLINE = new Date("2025-10-13T23:59:59");
 
 interface FormData {
   // Personal Information
