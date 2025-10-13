@@ -9,7 +9,7 @@ export default function AnnouncementBanner() {
         <div className="marquee-content">
           <span className="inline-block px-4">
             ☁️ Cloud Study Jams have started! Registrations are open - Closing
-            on 12th October EOD
+            on 15th October 12 noon.
           </span>
           <Link
             href="/cloud-study-jams"
@@ -18,32 +18,25 @@ export default function AnnouncementBanner() {
             Register Now
           </Link>
           <span className="inline-block px-4">
-            📝 Core Team Recruitment closing on 12th October 2025 at 5:00 PM
+            ☁️ Cloud Study Jams have started! Registrations are open - Closing
+            on 15th October 12 noon.
           </span>
           <Link
-            href="/recruitment"
+            href="/cloud-study-jams"
             className="inline-block bg-white/20 text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-100 hover:text-gray-800 transition-all whitespace-nowrap mx-2"
           >
-            Apply Now
+            Register Now
           </Link>
+
           <span className="inline-block px-4">
             ☁️ Cloud Study Jams have started! Registrations are open - Closing
-            on 12th October EOD
+            on 15th October 12 noon.
           </span>
           <Link
             href="/cloud-study-jams"
             className="inline-block  bg-white/20 text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-100 hover:text-gray-800 transition-all whitespace-nowrap mx-2"
           >
             Register Now
-          </Link>
-          <span className="inline-block px-4">
-            📝 Core Team Recruitment closing on 12th October 2025 at 5:00 PM
-          </span>
-          <Link
-            href="/recruitment"
-            className="inline-block bg-white/20 text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-100 hover:text-gray-800 transition-all whitespace-nowrap mx-2"
-          >
-            Apply Now
           </Link>
         </div>
       </div>
