@@ -24,7 +24,7 @@ export default function CloudStudyJamsPage() {
                 Register Now
               </Link>
               <p className="mt-4 text-sm opacity-80">
-                Registration closes on 12th October EOD
+                Registration closes on 13th October 3:00 PM.
               </p>
             </div>
           </div>
