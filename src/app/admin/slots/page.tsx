@@ -28,13 +28,15 @@ export default function AdminSlotsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [isBulkMode, setIsBulkMode] = useState(false);
   
   // Form state
   const [formData, setFormData] = useState({
     date: "",
     startTime: "",
     endTime: "",
-    venue: ""
+    venue: "",
+    slotDuration: "30"
   });
 
   useEffect(() => {
@@ -77,21 +79,40 @@ export default function AdminSlotsPage() {
     e.preventDefault();
     
     try {
+      const requestBody = isBulkMode
+        ? {
+            ...formData,
+            isBulk: true,
+            slotDuration: parseInt(formData.slotDuration)
+          }
+        : {
+            date: formData.date,
+            startTime: formData.startTime,
+            endTime: formData.endTime,
+            venue: formData.venue,
+            isBulk: false
+          };
+
       const response = await fetch("/api/admin/slots", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestBody),
       });
 
-      if (!response.ok) throw new Error("Failed to create slot");
+      const data = await response.json();
 
-      alert("Interview slot created successfully!");
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create slot");
+      }
+
+      alert(data.message || "Interview slot(s) created successfully!");
       setShowCreateForm(false);
-      setFormData({ date: "", startTime: "", endTime: "", venue: "" });
+      setFormData({ date: "", startTime: "", endTime: "", venue: "", slotDuration: "30" });
+      setIsBulkMode(false);
       fetchSlots();
     } catch (err) {
       console.error("Error creating slot:", err);
-      alert("Failed to create slot");
+      alert(err instanceof Error ? err.message : "Failed to create slot");
     }
   };
 
@@ -182,6 +203,40 @@ export default function AdminSlotsPage() {
         {showCreateForm && (
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Create Interview Slot</h3>
+            
+            {/* Mode Toggle */}
+            <div className="mb-6 flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+              <span className="text-sm font-medium text-gray-700">Creation Mode:</span>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="mode"
+                  checked={!isBulkMode}
+                  onChange={() => setIsBulkMode(false)}
+                  className="mr-2"
+                />
+                <span className="text-sm text-gray-700">Single Slot</span>
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="mode"
+                  checked={isBulkMode}
+                  onChange={() => setIsBulkMode(true)}
+                  className="mr-2"
+                />
+                <span className="text-sm text-gray-700">Bulk Slots</span>
+              </label>
+            </div>
+
+            {isBulkMode && (
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Bulk Mode:</strong> Multiple slots will be automatically generated with the specified duration between the start and end times.
+                </p>
+              </div>
+            )}
+
             <form onSubmit={handleCreateSlot} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -211,7 +266,7 @@ export default function AdminSlotsPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Start Time *
+                    {isBulkMode ? "Start Time (First Slot) *" : "Start Time *"}
                   </label>
                   <input
                     type="time"
@@ -223,7 +278,7 @@ export default function AdminSlotsPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    End Time *
+                    {isBulkMode ? "End Time (Last Slot) *" : "End Time *"}
                   </label>
                   <input
                     type="time"
@@ -233,13 +288,34 @@ export default function AdminSlotsPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
+                {isBulkMode && (
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Slot Duration (minutes) *
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.slotDuration}
+                      onChange={(e) => setFormData({ ...formData, slotDuration: e.target.value })}
+                      min="5"
+                      max="180"
+                      step="5"
+                      required
+                      placeholder="e.g., 30"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Slots will be created back-to-back with this duration (5-180 minutes)
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="flex justify-end">
                 <button
                   type="submit"
                   className="bg-success text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors font-medium"
                 >
-                  Create Slot
+                  {isBulkMode ? "Create Slots" : "Create Slot"}
                 </button>
               </div>
             </form>
