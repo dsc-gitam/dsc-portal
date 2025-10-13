@@ -49,6 +49,80 @@ export async function GET() {
   }
 }
 
+// Helper function to check for overlapping slots
+async function checkForOverlaps(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prisma: any,
+  date: Date,
+  startTime: string,
+  endTime: string,
+  venue: string
+): Promise<boolean> {
+  const existingSlots = await prisma.interviewSlot.findMany({
+    where: {
+      date: date,
+      venue: venue
+    }
+  });
+
+  // Convert time strings to minutes for comparison
+  const timeToMinutes = (time: string): number => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const newStart = timeToMinutes(startTime);
+  const newEnd = timeToMinutes(endTime);
+
+  for (const slot of existingSlots) {
+    const slotStart = timeToMinutes(slot.startTime);
+    const slotEnd = timeToMinutes(slot.endTime);
+
+    // Check for overlap: new slot starts before existing ends AND new slot ends after existing starts
+    if (newStart < slotEnd && newEnd > slotStart) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// Helper function to generate time slots
+function generateTimeSlots(
+  startTime: string,
+  endTime: string,
+  durationMinutes: number
+): Array<{ startTime: string; endTime: string }> {
+  const slots: Array<{ startTime: string; endTime: string }> = [];
+
+  const timeToMinutes = (time: string): number => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const minutesToTime = (minutes: number): string => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  };
+
+  const startMinutes = timeToMinutes(startTime);
+  const endMinutes = timeToMinutes(endTime);
+
+  let currentStart = startMinutes;
+
+  while (currentStart + durationMinutes <= endMinutes) {
+    const currentEnd = currentStart + durationMinutes;
+    slots.push({
+      startTime: minutesToTime(currentStart),
+      endTime: minutesToTime(currentEnd)
+    });
+    currentStart = currentEnd;
+  }
+
+  return slots;
+}
+
 // POST to create a new interview slot (admin only)
 export async function POST(request: NextRequest) {
   try {
@@ -74,7 +148,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Database not available' }, { status: 503 });
     }
 
-    const { date, startTime, endTime, venue } = await request.json();
+    const body = await request.json();
+    const { date, startTime, endTime, venue, isBulk, slotDuration } = body;
 
     if (!date || !startTime || !endTime || !venue) {
       return NextResponse.json({ 
@@ -82,9 +157,83 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
+    // Bulk creation mode
+    if (isBulk) {
+      if (!slotDuration || slotDuration <= 0) {
+        return NextResponse.json({ 
+          error: 'Valid slot duration is required for bulk creation' 
+        }, { status: 400 });
+      }
+
+      // Generate time slots
+      const timeSlots = generateTimeSlots(startTime, endTime, slotDuration);
+
+      if (timeSlots.length === 0) {
+        return NextResponse.json({ 
+          error: 'No slots can be generated with the given time range and duration' 
+        }, { status: 400 });
+      }
+
+      // Check for overlaps
+      const slotDate = new Date(date);
+      const overlappingSlots: string[] = [];
+
+      for (const timeSlot of timeSlots) {
+        const hasOverlap = await checkForOverlaps(
+          prisma,
+          slotDate,
+          timeSlot.startTime,
+          timeSlot.endTime,
+          venue
+        );
+
+        if (hasOverlap) {
+          overlappingSlots.push(`${timeSlot.startTime} - ${timeSlot.endTime}`);
+        }
+      }
+
+      if (overlappingSlots.length > 0) {
+        return NextResponse.json({ 
+          error: `The following slots overlap with existing slots: ${overlappingSlots.join(', ')}` 
+        }, { status: 400 });
+      }
+
+      // Create all slots
+      const createdSlots = await Promise.all(
+        timeSlots.map(timeSlot =>
+          prisma.interviewSlot.create({
+            data: {
+              date: slotDate,
+              startTime: timeSlot.startTime,
+              endTime: timeSlot.endTime,
+              venue,
+              isAvailable: true
+            }
+          })
+        )
+      );
+
+      return NextResponse.json({ 
+        slots: createdSlots,
+        message: `${createdSlots.length} interview slots created successfully`
+      });
+    }
+
+    // Single slot creation mode (original behavior)
+    const slotDate = new Date(date);
+
+    // Check for overlap
+    const hasOverlap = await checkForOverlaps(prisma, slotDate, startTime, endTime, venue);
+
+    if (hasOverlap) {
+      return NextResponse.json({ 
+        error: 'This slot overlaps with an existing slot at the same venue' 
+      }, { status: 400 });
+    }
+
     const slot = await prisma.interviewSlot.create({
       data: {
-        date: new Date(date),
+        date: slotDate,
         startTime,
         endTime,
         venue,
