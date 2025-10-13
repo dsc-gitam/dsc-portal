@@ -44,6 +44,14 @@ interface Application {
   } | null;
 }
 
+interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
 interface Stats {
   total: number;
   byGender: {
@@ -53,10 +61,10 @@ interface Stats {
     notSpecified: number;
   };
   byYear: {
-    '1st': number;
-    '2nd': number;
-    '3rd': number;
-    '4th': number;
+    "1st": number;
+    "2nd": number;
+    "3rd": number;
+    "4th": number;
   };
   byRole: Record<string, number>;
   byBranch: Record<string, number>;
@@ -68,19 +76,33 @@ export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [applications, setApplications] = useState<Application[]>([]);
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
+    hasMore: false,
+  });
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
-  
+  const [selectedApplication, setSelectedApplication] =
+    useState<Application | null>(null);
+
   // Filters
   const [yearFilter, setYearFilter] = useState("");
   const [branchFilter, setBranchFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("submitted");
   const [roleFilter, setRoleFilter] = useState("");
-  
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   // View mode
-  const [viewMode, setViewMode] = useState<"applications" | "stats" | "slots">("applications");
+  const [viewMode, setViewMode] = useState<"applications" | "stats" | "slots">(
+    "applications"
+  );
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -92,36 +114,48 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       setError("");
-      
+
       const params = new URLSearchParams();
       if (yearFilter) params.append("year", yearFilter);
       if (branchFilter) params.append("branch", branchFilter);
       if (statusFilter) params.append("status", statusFilter);
       if (roleFilter) params.append("role", roleFilter);
+      params.append("page", currentPage.toString());
+      params.append("limit", itemsPerPage.toString());
 
-      const response = await fetch(`/api/admin/applications?${params.toString()}`);
-      
+      const response = await fetch(
+        `/api/admin/applications?${params.toString()}`
+      );
+
       if (response.status === 403) {
         setError("You don't have admin access");
         return;
       }
-      
+
       if (!response.ok) throw new Error("Failed to fetch applications");
-      
+
       const data = await response.json();
       setApplications(data.applications || []);
+      setPagination(data.pagination);
     } catch (err) {
       console.error("Error fetching applications:", err);
       setError("Failed to load applications");
     } finally {
       setLoading(false);
     }
-  }, [yearFilter, branchFilter, statusFilter, roleFilter]);
+  }, [
+    yearFilter,
+    branchFilter,
+    statusFilter,
+    roleFilter,
+    currentPage,
+    itemsPerPage,
+  ]);
 
   const fetchStats = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/stats?status=${statusFilter}`);
-      
+
       if (response.ok) {
         const data = await response.json();
         setStats(data.stats);
@@ -138,8 +172,17 @@ export default function AdminDashboard() {
     }
   }, [session, fetchApplications, fetchStats]);
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [yearFilter, branchFilter, statusFilter, roleFilter]);
+
   const handleShortlist = async (applicationId: string) => {
-    if (!confirm("Are you sure you want to shortlist this candidate? They will receive an email to book their interview slot.")) {
+    if (
+      !confirm(
+        "Are you sure you want to shortlist this candidate? They will receive an email to book their interview slot."
+      )
+    ) {
       return;
     }
 
@@ -162,6 +205,40 @@ export default function AdminDashboard() {
     }
   };
 
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, pagination.totalPages)));
+  };
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+    const totalPages = pagination.totalPages;
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) pages.push(i);
+        pages.push("...");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push("...");
+        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        pages.push("...");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+        pages.push("...");
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+
   if (status === "loading" || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -178,7 +255,9 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md">
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Access Denied
+          </h2>
           <p className="text-gray-600 mb-4">{error}</p>
           <Link
             href="/"
@@ -191,6 +270,12 @@ export default function AdminDashboard() {
     );
   }
 
+  const startIndex = (pagination.page - 1) * pagination.limit + 1;
+  const endIndex = Math.min(
+    pagination.page * pagination.limit,
+    pagination.total
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -198,11 +283,17 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-sm text-gray-600">Manage recruitment applications</p>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Admin Dashboard
+              </h1>
+              <p className="text-sm text-gray-600">
+                Manage recruitment applications
+              </p>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{session?.user?.email}</span>
+              <span className="text-sm text-gray-600">
+                {session?.user?.email}
+              </span>
               <Link
                 href="/"
                 className="text-sm text-primary hover:text-blue-600 transition-colors"
@@ -226,7 +317,7 @@ export default function AdminDashboard() {
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              Applications ({applications.length})
+              Applications ({pagination.total})
             </button>
             <button
               onClick={() => setViewMode("stats")}
@@ -263,7 +354,9 @@ export default function AdminDashboard() {
           <div>
             {/* Filters */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Filters
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -324,6 +417,31 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            {/* Pagination Controls - Top */}
+            <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-gray-700">
+                    Showing {pagination.total === 0 ? 0 : startIndex} to{" "}
+                    {endIndex} of {pagination.total} applications
+                  </span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    <option value={10}>10 per page</option>
+                    <option value={25}>25 per page</option>
+                    <option value={50}>50 per page</option>
+                    <option value={100}>100 per page</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             {/* Applications Table */}
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
@@ -351,61 +469,126 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {applications.map((app) => (
-                      <tr key={app.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
-                            {app.firstName} {app.lastName}
-                          </div>
-                          <div className="text-sm text-gray-500">{app.studentId}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{app.email}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{app.yearOfStudy}</div>
-                          <div className="text-sm text-gray-500">{app.branch}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{app.selectedRole}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              app.status === "shortlisted"
-                                ? "bg-green-100 text-green-800"
-                                : app.status === "submitted"
-                                ? "bg-blue-100 text-blue-800"
-                                : app.status === "rejected"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-gray-100 text-gray-800"
-                            }`}
-                          >
-                            {app.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button
-                            onClick={() => setSelectedApplication(app)}
-                            className="text-primary hover:text-blue-600 mr-4"
-                          >
-                            View
-                          </button>
-                          {app.status !== "shortlisted" && (
-                            <button
-                              onClick={() => handleShortlist(app.id)}
-                              className="text-success hover:text-green-600"
-                            >
-                              Shortlist
-                            </button>
-                          )}
+                    {applications.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={6}
+                          className="px-6 py-8 text-center text-gray-500"
+                        >
+                          No applications found
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      applications.map((app) => (
+                        <tr key={app.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">
+                              {app.firstName} {app.lastName}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {app.studentId}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">
+                              {app.email}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">
+                              {app.yearOfStudy}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {app.branch}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">
+                              {app.selectedRole}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                app.status === "shortlisted"
+                                  ? "bg-green-100 text-green-800"
+                                  : app.status === "submitted"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : app.status === "rejected"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}
+                            >
+                              {app.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button
+                              onClick={() => setSelectedApplication(app)}
+                              className="text-primary hover:text-blue-600 mr-4"
+                            >
+                              View
+                            </button>
+                            {app.status !== "shortlisted" && (
+                              <button
+                                onClick={() => handleShortlist(app.id)}
+                                className="text-success hover:text-green-600"
+                              >
+                                Shortlist
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
+
+            {/* Pagination Controls - Bottom */}
+            {pagination.totalPages > 1 && (
+              <div className="bg-white rounded-lg shadow-sm p-4 mt-4">
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Previous
+                  </button>
+
+                  <div className="flex items-center space-x-2">
+                    {getPageNumbers().map((page, index) => (
+                      <button
+                        key={index}
+                        onClick={() =>
+                          typeof page === "number" && goToPage(page)
+                        }
+                        disabled={page === "..."}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          page === currentPage
+                            ? "bg-primary text-white"
+                            : page === "..."
+                            ? "cursor-default text-gray-400"
+                            : "text-gray-700 hover:bg-gray-50 border border-gray-300"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage === pagination.totalPages}
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -413,22 +596,34 @@ export default function AdminDashboard() {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Total Applications</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Total Applications
+                </h3>
                 <p className="text-4xl font-bold text-primary">{stats.total}</p>
               </div>
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Technical</h3>
-                <p className="text-4xl font-bold text-blue-600">{stats.technical}</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Technical
+                </h3>
+                <p className="text-4xl font-bold text-blue-600">
+                  {stats.technical}
+                </p>
               </div>
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Non-Technical</h3>
-                <p className="text-4xl font-bold text-green-600">{stats.nonTechnical}</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Non-Technical
+                </h3>
+                <p className="text-4xl font-bold text-green-600">
+                  {stats.nonTechnical}
+                </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Gender Distribution</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Gender Distribution
+                </h3>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Male:</span>
@@ -436,43 +631,53 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex justify-between">
                     <span>Female:</span>
-                    <span className="font-semibold">{stats.byGender.female}</span>
+                    <span className="font-semibold">
+                      {stats.byGender.female}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Other:</span>
-                    <span className="font-semibold">{stats.byGender.other}</span>
+                    <span className="font-semibold">
+                      {stats.byGender.other}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Not Specified:</span>
-                    <span className="font-semibold">{stats.byGender.notSpecified}</span>
+                    <span className="font-semibold">
+                      {stats.byGender.notSpecified}
+                    </span>
                   </div>
                 </div>
               </div>
 
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Year Distribution</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Year Distribution
+                </h3>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>1st Year:</span>
-                    <span className="font-semibold">{stats.byYear['1st']}</span>
+                    <span className="font-semibold">{stats.byYear["1st"]}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>2nd Year:</span>
-                    <span className="font-semibold">{stats.byYear['2nd']}</span>
+                    <span className="font-semibold">{stats.byYear["2nd"]}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>3rd Year:</span>
-                    <span className="font-semibold">{stats.byYear['3rd']}</span>
+                    <span className="font-semibold">{stats.byYear["3rd"]}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>4th Year:</span>
-                    <span className="font-semibold">{stats.byYear['4th']}</span>
+                    <span className="font-semibold">{stats.byYear["4th"]}</span>
                   </div>
                 </div>
               </div>
 
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">By Role</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  By Role
+                </h3>
                 <div className="space-y-2">
                   {Object.entries(stats.byRole).map(([role, count]) => (
                     <div key={role} className="flex justify-between">
@@ -484,7 +689,9 @@ export default function AdminDashboard() {
               </div>
 
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">By Branch</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  By Branch
+                </h3>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {Object.entries(stats.byBranch).map(([branch, count]) => (
                     <div key={branch} className="flex justify-between">
@@ -501,7 +708,9 @@ export default function AdminDashboard() {
         {viewMode === "slots" && (
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Interview Slots Management</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Interview Slots Management
+              </h3>
               <Link
                 href="/admin/slots"
                 className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
@@ -510,7 +719,9 @@ export default function AdminDashboard() {
               </Link>
             </div>
             <p className="text-gray-600">
-              Create and manage interview slots for shortlisted candidates. Click &quot;Manage Slots&quot; to access the slot management interface.
+              Create and manage interview slots for shortlisted candidates.
+              Click &quot;Manage Slots&quot; to access the slot management
+              interface.
             </p>
           </div>
         )}
@@ -528,8 +739,18 @@ export default function AdminDashboard() {
                 onClick={() => setSelectedApplication(null)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -537,7 +758,9 @@ export default function AdminDashboard() {
             <div className="p-6 space-y-6">
               {/* Personal Information */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Personal Information</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Personal Information
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-600">Email</p>
@@ -545,26 +768,36 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Phone</p>
-                    <p className="font-medium">{selectedApplication.phone || "N/A"}</p>
+                    <p className="font-medium">
+                      {selectedApplication.phone || "N/A"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Student ID</p>
-                    <p className="font-medium">{selectedApplication.studentId}</p>
+                    <p className="font-medium">
+                      {selectedApplication.studentId}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Gender</p>
-                    <p className="font-medium">{selectedApplication.gender || "Not specified"}</p>
+                    <p className="font-medium">
+                      {selectedApplication.gender || "Not specified"}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Academic Information */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Academic Information</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Academic Information
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-600">Year of Study</p>
-                    <p className="font-medium">{selectedApplication.yearOfStudy}</p>
+                    <p className="font-medium">
+                      {selectedApplication.yearOfStudy}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Branch</p>
@@ -572,22 +805,32 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">CGPA</p>
-                    <p className="font-medium">{selectedApplication.cgpa || "N/A"}</p>
+                    <p className="font-medium">
+                      {selectedApplication.cgpa || "N/A"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Preferred Role</p>
-                    <p className="font-medium">{selectedApplication.selectedRole}</p>
+                    <p className="font-medium">
+                      {selectedApplication.selectedRole}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Technical Skills */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Technical Skills</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Technical Skills
+                </h3>
                 <div className="space-y-2">
                   <div>
-                    <p className="text-sm text-gray-600">Programming Languages</p>
-                    <p className="font-medium">{selectedApplication.programmingLanguages || "N/A"}</p>
+                    <p className="text-sm text-gray-600">
+                      Programming Languages
+                    </p>
+                    <p className="font-medium">
+                      {selectedApplication.programmingLanguages || "N/A"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">GitHub Profile</p>
@@ -628,30 +871,46 @@ export default function AdminDashboard() {
 
               {/* Motivation */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Motivation</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Motivation
+                </h3>
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-600">Why do you want to join DSC GITAM?</p>
-                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">{selectedApplication.whyJoin || "N/A"}</p>
+                    <p className="text-sm text-gray-600">
+                      Why do you want to join DSC GITAM?
+                    </p>
+                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">
+                      {selectedApplication.whyJoin || "N/A"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">How will you contribute?</p>
-                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">{selectedApplication.howContribute || "N/A"}</p>
+                    <p className="text-sm text-gray-600">
+                      How will you contribute?
+                    </p>
+                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">
+                      {selectedApplication.howContribute || "N/A"}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Projects */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Projects & Ideas</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Projects & Ideas
+                </h3>
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-gray-600">Passion Project</p>
-                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">{selectedApplication.passionProject || "N/A"}</p>
+                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">
+                      {selectedApplication.passionProject || "N/A"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Challenge Proposal</p>
-                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">{selectedApplication.challengeProposal || "N/A"}</p>
+                    <p className="mt-1 text-gray-900 whitespace-pre-wrap">
+                      {selectedApplication.challengeProposal || "N/A"}
+                    </p>
                   </div>
                   {selectedApplication.taskSubmission && (
                     <div>
@@ -674,14 +933,23 @@ export default function AdminDashboard() {
               {/* Interview Booking Status */}
               {selectedApplication.interviewBooking && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Interview Scheduled</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                    Interview Scheduled
+                  </h3>
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <p className="text-sm text-gray-600 mb-2">Interview Details:</p>
-                    <p className="font-medium">
-                      {new Date(selectedApplication.interviewBooking.slot.date).toLocaleDateString()} at{" "}
-                      {selectedApplication.interviewBooking.slot.startTime} - {selectedApplication.interviewBooking.slot.endTime}
+                    <p className="text-sm text-gray-600 mb-2">
+                      Interview Details:
                     </p>
-                    <p className="text-sm text-gray-600 mt-1">Venue: {selectedApplication.interviewBooking.slot.venue}</p>
+                    <p className="font-medium">
+                      {new Date(
+                        selectedApplication.interviewBooking.slot.date
+                      ).toLocaleDateString()}{" "}
+                      at {selectedApplication.interviewBooking.slot.startTime} -{" "}
+                      {selectedApplication.interviewBooking.slot.endTime}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Venue: {selectedApplication.interviewBooking.slot.venue}
+                    </p>
                   </div>
                 </div>
               )}
