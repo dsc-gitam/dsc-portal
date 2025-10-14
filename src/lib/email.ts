@@ -218,7 +218,7 @@ export async function sendShortlistNotification(
             .header { background: linear-gradient(135deg, #34A853, #4285F4); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
             .content { background: #fff; padding: 30px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 10px 10px; }
             .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
-            .button { display: inline-block; background: #34A853; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+            .button { display: inline-block; background: #FBC005; color: black; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
             .highlight { background: #e8f5e9; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #34A853; }
           </style>
         </head>
