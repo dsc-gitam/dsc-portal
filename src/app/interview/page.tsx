@@ -172,7 +172,7 @@ export default function InterviewBookingPage() {
                   <p><span className="font-medium text-green-900">Date:</span> <span className="text-green-700">{formatDate(bookedSlotData.date)}</span></p>
                   <p><span className="font-medium text-green-900">Time:</span> <span className="text-green-700">{bookedSlotData.startTime} - {bookedSlotData.endTime}</span></p>
                   <p><span className="font-medium text-green-900">Venue:</span> <span className="text-green-700">{bookedSlotData.venue}</span></p>
-                  <p><span className="font-medium text-green-900">Duration:</span> <span className="text-green-700">45 minutes</span></p>
+                  <p><span className="font-medium text-green-900">Duration:</span> <span className="text-green-700">10 minutes</span></p>
                 </div>
               </div>
             )}
@@ -247,7 +247,7 @@ export default function InterviewBookingPage() {
             </div>
             <div>
               <h3 className="font-medium text-blue-900">Duration</h3>
-              <p className="text-blue-800">Approximately 45 minutes</p>
+              <p className="text-blue-800">Approximately 10 minutes</p>
             </div>
             <div>
               <h3 className="font-medium text-blue-900">What to Expect</h3>
