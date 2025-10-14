@@ -21,7 +21,7 @@ interface ApplicationData {
 
 export async function sendApplicationConfirmation(applicationData: ApplicationData) {
   const { firstName, lastName, email, studentId, year, branch, role } = applicationData;
-  
+
   const mailOptions = {
     from: process.env.SMTP_USER,
     to: email,
@@ -104,9 +104,9 @@ export async function sendApplicationConfirmation(applicationData: ApplicationDa
 }
 
 export async function sendInterviewConfirmation(
-  email: string, 
-  name: string, 
-  date: string, 
+  email: string,
+  name: string,
+  date: string,
   time: string,
   meetLink: string = "Will be provided 1 hour before the interview"
 ) {
@@ -200,7 +200,7 @@ export async function sendInterviewConfirmation(
 export async function sendShortlistNotification(
   email: string,
   name: string,
-  portalUrl: string = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+  portalUrl: string = process.env.NEXTAUTH_URL || 'https://gdgocgitam.vizag.dev'
 ) {
   const mailOptions = {
     from: process.env.SMTP_USER,
@@ -241,15 +241,15 @@ export async function sendShortlistNotification(
               </div>
               
               <div style="text-align: center;">
-                <a href="${portalUrl}/interview" class="button">Book Your Interview Slot</a>
+                <a href="https://gdgocgitam.vizag.dev/interview" class="button">Book Your Interview Slot</a>
               </div>
               
               <h3>What to Expect</h3>
               <ul>
                 <li>Select a convenient date and time for your interview</li>
                 <li>Receive a confirmation email with interview details</li>
-                <li>Interview duration: 45 minutes (Virtual via Google Meet)</li>
-                <li>Be prepared to discuss your application and projects</li>
+                <li>Interview duration: 10 mins (Offline)</li>
+                <li>Be prepared to discuss your application, resume and projects</li>
               </ul>
               
               <p><strong>Note:</strong> Please book your slot within 48 hours to avoid missing out on the opportunity.</p>
