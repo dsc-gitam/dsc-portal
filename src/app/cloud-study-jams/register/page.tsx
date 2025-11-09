@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 
+// Cloud Study Jams registration deadline: October 15, 2024 at 12:00 PM (noon)
+const REGISTRATION_DEADLINE = new Date("2024-10-15T12:00:00");
+
 export default function CloudStudyJamsRegisterPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -34,6 +37,22 @@ export default function CloudStudyJamsRegisterPage() {
   const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(
     null
   );
+  const [isRegistrationClosed, setIsRegistrationClosed] = useState(false);
+
+  // Check if registration is closed
+  useEffect(() => {
+    const checkDeadline = () => {
+      const now = new Date().getTime();
+      const deadline = REGISTRATION_DEADLINE.getTime();
+      const difference = deadline - now;
+
+      if (difference <= 0) {
+        setIsRegistrationClosed(true);
+      }
+    };
+
+    checkDeadline();
+  }, []);
 
   // Fetch existing registration data
   useEffect(() => {
@@ -232,7 +251,58 @@ export default function CloudStudyJamsRegisterPage() {
           </div>
         )}
 
-        {status === "authenticated" && registrationStatus === "submitted" && (
+        {isRegistrationClosed && (
+          <div className="bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200 rounded-2xl shadow-xl p-8 mb-8">
+            <div className="text-center">
+              <div className="flex justify-center mb-6">
+                <div className="w-20 h-20 bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <span className="text-white text-3xl font-bold">⏰</span>
+                </div>
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-display">
+                Cloud Study Jams Registration <span className="text-red-600">Closed</span>
+              </h1>
+              <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+                Thank you for your interest in Google Cloud Study Jams. 
+                The registration period closed on <span className="font-semibold">October 15th, 2024 at 12:00 PM (noon)</span>.
+              </p>
+              
+              <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6 text-left">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Stay Connected!</h2>
+                <p className="text-gray-700 mb-4">
+                  While registration for this cycle is closed, there are still many ways to be part of our community:
+                </p>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-3 mt-1">✓</span>
+                    <span>Join our GDG on Campus community and participate in other events</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-3 mt-1">✓</span>
+                    <span>Follow our social media channels for updates on future programs</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-3 mt-1">✓</span>
+                    <span>Watch for announcements about upcoming Cloud Study Jams cycles</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-green-500 mr-3 mt-1">✓</span>
+                    <span>Continue learning on Google Cloud Skills Boost independently</span>
+                  </li>
+                </ul>
+              </div>
+
+              <Link
+                href="/cloud-study-jams"
+                className="inline-block bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                ← Back to Cloud Study Jams
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {status === "authenticated" && !isRegistrationClosed && registrationStatus === "submitted" && (
           <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 mb-8">
             <h3 className="font-bold text-green-900 mb-2">
               ✓ Registration Already Submitted
@@ -250,7 +320,7 @@ export default function CloudStudyJamsRegisterPage() {
           </div>
         )}
 
-        {status === "authenticated" && registrationStatus !== "submitted" && (
+        {status === "authenticated" && !isRegistrationClosed && registrationStatus !== "submitted" && (
           <>
             {/* Save Status */}
             {isSaving && (

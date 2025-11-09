@@ -4,6 +4,9 @@ import { authOptions } from '@/lib/auth';
 import { getPrismaClient, isDatabaseAvailable } from '@/lib/prisma';
 import type { Session } from 'next-auth';
 
+// Cloud Study Jams registration deadline: October 15, 2024 at 12:00 PM (noon)
+const REGISTRATION_DEADLINE = new Date("2024-10-15T12:00:00");
+
 export async function GET() {
   try {
     const session: Session | null = await getServerSession(authOptions);
@@ -47,6 +50,12 @@ export async function POST(request: NextRequest) {
     
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Check if registration is closed
+    const now = new Date();
+    if (now > REGISTRATION_DEADLINE) {
+      return NextResponse.json({ error: 'Registration is closed' }, { status: 403 });
     }
 
     if (!isDatabaseAvailable()) {
@@ -107,6 +116,12 @@ export async function PUT(request: NextRequest) {
     
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Check if registration is closed
+    const now = new Date();
+    if (now > REGISTRATION_DEADLINE) {
+      return NextResponse.json({ error: 'Registration is closed' }, { status: 403 });
     }
 
     if (!isDatabaseAvailable()) {
