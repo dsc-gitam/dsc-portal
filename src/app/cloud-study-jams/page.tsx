@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Header from "@/components/Header";
 
 export default function CloudStudyJamsPage() {
@@ -18,14 +17,11 @@ export default function CloudStudyJamsPage() {
                 Unlock your potential with hands-on learning and
                 community-driven growth
               </p>
-              <Link
-                href="/cloud-study-jams/register"
-                className="inline-block bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-xl"
-              >
-                Register Now
-              </Link>
+              <div className="inline-block bg-red-100 text-red-700 px-8 py-4 rounded-full text-lg font-bold shadow-xl">
+                Registration Closed
+              </div>
               <p className="mt-4 text-sm opacity-80">
-                Registration closes on 15th October 12 noon.
+                Registration closed on 15th October 2024 at 12:00 PM (noon).
               </p>
             </div>
           </div>
@@ -174,14 +170,11 @@ export default function CloudStudyJamsPage() {
               Join hundreds of students learning Google Cloud technologies and
               building the future.
             </p>
-            <Link
-              href="/cloud-study-jams/register"
-              className="inline-block bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-xl"
-            >
-              Register Now
-            </Link>
+            <div className="inline-block bg-white text-red-600 px-8 py-4 rounded-full text-lg font-bold shadow-xl">
+              Registration Closed
+            </div>
             <p className="mt-6 text-white text-sm opacity-80">
-              Thanks and looking forward to see you enrolled for the campaign 🙂
+              Thank you for your interest. Registration closed on October 15th, 2024.
             </p>
           </div>
         </section>
